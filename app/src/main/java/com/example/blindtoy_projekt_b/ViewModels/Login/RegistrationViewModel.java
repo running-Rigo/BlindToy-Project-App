@@ -13,10 +13,6 @@ public class RegistrationViewModel extends AndroidViewModel {
     GeneralUserRepository userRepository;
     Application application;
 
-    public MutableLiveData<String> registrationError = new MutableLiveData<>();
-    Observer<String> registrationErrorObserver;
-
-
     //Constructor with Application as Context
     public RegistrationViewModel(@NonNull Application application) {
         super(application);

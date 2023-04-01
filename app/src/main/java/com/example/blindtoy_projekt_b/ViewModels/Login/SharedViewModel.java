@@ -10,6 +10,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
+import com.example.blindtoy_projekt_b.Data.LocalRoomsData.User;
 import com.example.blindtoy_projekt_b.Repositories.GeneralUserRepository;
 
 public class SharedViewModel extends AndroidViewModel {
@@ -19,6 +20,8 @@ public class SharedViewModel extends AndroidViewModel {
     private MutableLiveData<String> nextUI = new MutableLiveData<>();
     public LiveData<String> repoErrorMessage;
     private Observer<Boolean> loginStatusObserver;
+    private Observer<String> asyncStatusObserver;
+
 
 
     public SharedViewModel(@NonNull Application application) {
@@ -27,6 +30,12 @@ public class SharedViewModel extends AndroidViewModel {
         repoErrorMessage = userRepository.repoErrorMessage;
         setNextFragmentDecision("");
         initObserver();
+    }
+
+    @Override
+    protected void onCleared(){
+        userRepository.asyncStatusUpdate.removeObserver(asyncStatusObserver);
+        userRepository.userIsLoggedIn.removeObserver(loginStatusObserver);
     }
 
     private void initObserver(){
@@ -39,6 +48,16 @@ public class SharedViewModel extends AndroidViewModel {
             }
         };
         userRepository.userIsLoggedIn.observeForever(loginStatusObserver);
+
+        asyncStatusObserver = new Observer<String>() {
+            @Override
+            public void onChanged(String repoStatus) {
+                if(repoStatus.equals("registrationSuccessful")){
+                    chooseLogin();
+                }
+            }
+        };
+        userRepository.asyncStatusUpdate.observeForever(asyncStatusObserver);
     }
 
 //region Methods for LiveData nextFragmentDecision
