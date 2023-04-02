@@ -50,6 +50,10 @@ public class InternalSharedViewModel extends AndroidViewModel {
         userRepository.logoutUser();
     }
 
+    public void chooseAddPet(){
+        setNextFragmentDecision("AddPetFragment");
+    }
+
 
     private void setNextFragmentDecision(String nextUIChoice) {
         nextUI.setValue(nextUIChoice);

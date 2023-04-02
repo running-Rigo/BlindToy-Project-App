@@ -61,7 +61,6 @@ public class GeneralUserRepository {
         checkForKnownUser();
     }
 
-
     //Get Instance Method
     public static GeneralUserRepository getInstance(Application application){
         if(myUserRepository == null){
@@ -324,6 +323,14 @@ public class GeneralUserRepository {
         }
     }
     //endregion
+//region NewPet
+    public void saveNewPet(String name, String species){
+        Log.d(TAG,"Pet  will be saved!");
+        //Method savePetExternal();
+        //onSuccess-> Method savePetToRooms();
+        setAsyncStatusUpdate("newPetSuccessful");
+    }
+//endregion
 }
 
 

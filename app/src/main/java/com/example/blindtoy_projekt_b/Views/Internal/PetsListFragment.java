@@ -3,6 +3,7 @@ package com.example.blindtoy_projekt_b.Views.Internal;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -17,6 +18,7 @@ import com.example.blindtoy_projekt_b.Data.LocalRoomsData.Pet;
 import com.example.blindtoy_projekt_b.R;
 import com.example.blindtoy_projekt_b.ViewModels.Internal.InternalSharedViewModel;
 import com.example.blindtoy_projekt_b.ViewModels.Internal.PetsListViewModel;
+import com.example.blindtoy_projekt_b.Views.Login.RegistrationFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -54,10 +56,10 @@ public class PetsListFragment extends Fragment {
     private void initViews(){
         addPetButton = view.findViewById(R.id.addPetButton);
         addPetButton.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View view) {
-                Log.d(TAG,"Clicked addPet");
-                //internalSharedViewModel.addPet();
+                internalSharedViewModel.chooseAddPet();
             }
         });
         listView = view.findViewById(R.id.petsListView);
@@ -75,6 +77,9 @@ public class PetsListFragment extends Fragment {
                         String petDescription = pet.name +" (" + pet.species +")";
                         petsToRender.add(petDescription);
                     }
+                }
+                else{
+                    petsToRender.add("Lege dein erstes Haustier an!");
                 }
             }
         });

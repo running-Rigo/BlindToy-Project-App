@@ -61,7 +61,16 @@ public class InternalMainActivity extends AppCompatActivity {
                     //render LoginFragment
                     FragmentManager fragmentManager = getSupportFragmentManager();
                     fragmentManager.beginTransaction()
-                            .replace(R.id.fragment_container_view, LoginFragment.class, null)
+                            .replace(R.id.internal_fragment_container_view, PetsListFragment.class, null)
+                            .setReorderingAllowed(true)
+                            .addToBackStack("name") // name can be null
+                            .commit();
+                }
+                else if(nextUI.equals("AddPetFragment")){
+                    //render LoginFragment
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.internal_fragment_container_view, AddPetFragment.class, null)
                             .setReorderingAllowed(true)
                             .addToBackStack("name") // name can be null
                             .commit();

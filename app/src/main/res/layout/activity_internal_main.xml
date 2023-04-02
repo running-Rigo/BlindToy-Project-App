@@ -7,7 +7,7 @@
     tools:context=".Views.Internal.InternalMainActivity">
 
     <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fragment_container_view"
+        android:id="@+id/internal_fragment_container_view"
         android:name="com.example.blindtoy_projekt_b.Views.Internal.PetsListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -35,7 +35,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.553"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fragment_container_view"
+        app:layout_constraintTop_toBottomOf="@+id/internal_fragment_container_view"
         app:layout_constraintVertical_bias="0.326" />
 
 
