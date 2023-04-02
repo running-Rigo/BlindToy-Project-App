@@ -4,16 +4,12 @@ import com.example.blindtoy_projekt_b.Data.LocalRoomsData.Pet;
 import com.example.blindtoy_projekt_b.Data.LocalRoomsData.Pet;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ServerDbUser {
     private String user_id;
     private String name;
-
     private ArrayList<Pet> petsList;
-
-    //private String email;
-    //private String password;
-
 
     //Getter methods:
     public String getUser_id() {
@@ -24,7 +20,7 @@ public class ServerDbUser {
         return name;
     }
 
-    public ArrayList<Pet> getPetsList() {
+    public List<Pet> getPetsList() {
         return petsList;
     }
 

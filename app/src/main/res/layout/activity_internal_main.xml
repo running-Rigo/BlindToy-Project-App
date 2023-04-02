@@ -6,14 +6,37 @@
     android:layout_height="match_parent"
     tools:context=".Views.Internal.InternalMainActivity">
 
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_container_view"
+        android:name="com.example.blindtoy_projekt_b.Views.Internal.PetsListFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="100dp"
+        android:layout_marginBottom="100dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout="@layout/fragment_pets_list"
+        tools:layout_editor_absoluteX="0dp" />
 
-    <TextView
-        android:id="@+id/textView"
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        android:background="#2196F3"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_height="50sp"
+        tools:layout_width="match_parent" />
+
+    <Button
+        android:id="@+id/internalLogoutBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello User"
+        android:text="Logout"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.553"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/fragment_container_view"
+        app:layout_constraintVertical_bias="0.326" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
