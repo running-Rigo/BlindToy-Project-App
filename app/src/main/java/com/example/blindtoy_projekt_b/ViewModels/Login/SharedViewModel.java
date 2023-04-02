@@ -19,10 +19,7 @@ public class SharedViewModel extends AndroidViewModel {
     public LiveData<String> nextFragmentDecision;
     private MutableLiveData<String> nextUI = new MutableLiveData<>();
     public LiveData<String> repoErrorMessage;
-    private Observer<Boolean> loginStatusObserver;
     private Observer<String> asyncStatusObserver;
-
-
 
     public SharedViewModel(@NonNull Application application) {
         super(application);
@@ -35,33 +32,25 @@ public class SharedViewModel extends AndroidViewModel {
     @Override
     protected void onCleared(){
         userRepository.asyncStatusUpdate.removeObserver(asyncStatusObserver);
-        userRepository.userIsLoggedIn.removeObserver(loginStatusObserver);
     }
 
     private void initObserver(){
-        loginStatusObserver = new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean isLoggedIn) {
-                if(isLoggedIn){
-                    logUserIn();
-                }
-            }
-        };
-        userRepository.userIsLoggedIn.observeForever(loginStatusObserver);
-
         asyncStatusObserver = new Observer<String>() {
             @Override
             public void onChanged(String repoStatus) {
                 if(repoStatus.equals("registrationSuccessful")){
                     chooseLogin();
                 }
+                else if(repoStatus.equals("loginSuccessful")){
+                    logUserIn();
+                }
             }
         };
         userRepository.asyncStatusUpdate.observeForever(asyncStatusObserver);
     }
 
-//region Methods for LiveData nextFragmentDecision
 
+//region Methods for LiveData nextFragmentDecision
     private void setNextFragmentDecision(String nextUIChoice) {
         nextUI.setValue(nextUIChoice);
         this.nextFragmentDecision = nextUI;
@@ -78,7 +67,6 @@ public class SharedViewModel extends AndroidViewModel {
     }
 
     private void logUserIn(){
-        //Method for Checking login...mh.
         setNextFragmentDecision("InternalMainActivity");
     }
     //endregion

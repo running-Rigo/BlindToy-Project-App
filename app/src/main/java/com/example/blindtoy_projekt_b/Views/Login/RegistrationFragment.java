@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.blindtoy_projekt_b.R;
@@ -26,8 +27,9 @@ public class RegistrationFragment extends Fragment {
     public RegistrationViewModel registrationViewModel;
     //LoginViewModel loginViewModel;
 
-    EditText username, userEmail,password;
+    EditText username, userEmail, password;
     Button registrationBtn;
+    private ProgressBar spinner;
 
     public RegistrationFragment() {
         // Required empty public constructor
@@ -42,15 +44,18 @@ public class RegistrationFragment extends Fragment {
         // The ViewModel is scoped to `this` Fragment
         registrationViewModel = new ViewModelProvider(this).get(RegistrationViewModel.class);
         initViews();
-        Log.d(TAG,"geöffnet!");
+        initObserver();
+        Log.d(TAG, "geöffnet!");
         return view;
     }
 
-    private void initViews(){
+    private void initViews() {
         username = view.findViewById(R.id.newusername);
         userEmail = view.findViewById(R.id.newuseremail);
         password = view.findViewById(R.id.newuserpassword);
         registrationBtn = view.findViewById(R.id.registernow);
+        spinner = view.findViewById(R.id.registrationProgressBar);
+        spinner.setVisibility(View.GONE);
 
         registrationBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,9 +63,23 @@ public class RegistrationFragment extends Fragment {
                 String enteredUserName = username.getText().toString();
                 String enteredEmail = userEmail.getText().toString();
                 String enteredPassword = password.getText().toString();
-                registrationViewModel.createUser(enteredUserName,enteredEmail,enteredPassword);
+                registrationViewModel.createUser(enteredUserName, enteredEmail, enteredPassword);
             }
         });
     }
 
+    private void initObserver() {
+        registrationViewModel.inProgress.observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean isLoading) {
+                if (isLoading) {
+                    spinner.setVisibility(View.VISIBLE);
+                    registrationBtn.setEnabled(false);
+                } else {
+                    spinner.setVisibility(View.GONE);
+                    registrationBtn.setEnabled(true);
+                }
+            }
+        });
+    }
 }

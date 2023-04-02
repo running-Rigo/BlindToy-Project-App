@@ -28,6 +28,14 @@ public class ServerDbUser {
         return petsList;
     }
 
+    @Override
+    public String toString() {
+        return "ServerDbUser{" +
+                "user_id='" + user_id + '\'' +
+                ", name='" + name + '\'' +
+                ", petsList=" + petsList +
+                '}';
+    }
 }
 
 
