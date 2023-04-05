@@ -5,6 +5,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,10 +15,11 @@ import android.widget.Toast;
 
 import com.example.blindtoy_projekt_b.R;
 import com.example.blindtoy_projekt_b.ViewModels.Internal.InternalSharedViewModel;
-import com.example.blindtoy_projekt_b.ViewModels.Login.SharedViewModel;
-import com.example.blindtoy_projekt_b.Views.Login.LoginFragment;
+import com.example.blindtoy_projekt_b.Views.Game.OnePetActivity;
+import com.example.blindtoy_projekt_b.Views.Game.OnePetFragment;
+import com.example.blindtoy_projekt_b.Views.Play.PlayWithPetActivity;
+import com.example.blindtoy_projekt_b.Views.Game.SoundSettingsFragment;
 import com.example.blindtoy_projekt_b.Views.Login.MainActivity;
-import com.example.blindtoy_projekt_b.Views.Login.RegistrationFragment;
 
 public class InternalMainActivity extends AppCompatActivity {
     private static final String TAG = "InternalMainActivity";
@@ -43,6 +45,7 @@ public class InternalMainActivity extends AppCompatActivity {
                 internalSharedViewModel.doLogout();
             }
         });
+
     }
 
     private void initObservers(){
@@ -53,8 +56,17 @@ public class InternalMainActivity extends AppCompatActivity {
                 Log.d(TAG, "registered change in nextFragmentDecision");
                 if(nextUI.equals("MainActivity")){
                     //start MainActivity
-                    Intent logoutIntent = new Intent(getApplicationContext(), MainActivity.class);
+                    Context c = getApplicationContext();
+                    Intent logoutIntent = new Intent(c, MainActivity.class);
                     startActivity(logoutIntent);
+                }
+
+                else if(nextUI.equals("OnePetActivity")){
+                    Log.d(TAG,"onePetActivity");
+                    //start OnePetActivity
+                    Context c = getApplicationContext();
+                    Intent gameIntent = new Intent(c, OnePetActivity.class);
+                    startActivity(gameIntent);
                 }
 
                 else if(nextUI.equals("PetsListFragment")){
@@ -67,7 +79,7 @@ public class InternalMainActivity extends AppCompatActivity {
                             .commit();
                 }
                 else if(nextUI.equals("AddPetFragment")){
-                    //render LoginFragment
+                    //render AddPetFragment
                     FragmentManager fragmentManager = getSupportFragmentManager();
                     fragmentManager.beginTransaction()
                             .replace(R.id.internal_fragment_container_view, AddPetFragment.class, null)
@@ -75,18 +87,6 @@ public class InternalMainActivity extends AppCompatActivity {
                             .addToBackStack("name") // name can be null
                             .commit();
                 }
-                /*
-                else if(nextUI.equals("RegistrationFragment")){
-                    //render RegistrationFragment
-                    FragmentManager fragmentManager = getSupportFragmentManager();
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.fragment_container_view, RegistrationFragment.class, null)
-                            .setReorderingAllowed(true)
-                            .addToBackStack("name") // name can be null
-                            .commit();
-                }
-
-                 */
             }
         });
 

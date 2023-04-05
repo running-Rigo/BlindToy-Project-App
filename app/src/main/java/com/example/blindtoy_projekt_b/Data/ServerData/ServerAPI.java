@@ -1,7 +1,9 @@
 package com.example.blindtoy_projekt_b.Data.ServerData;
 
+import com.example.blindtoy_projekt_b.Entities.ServerDbPet;
 import com.example.blindtoy_projekt_b.Entities.ServerDbUser;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
@@ -20,5 +22,13 @@ public interface ServerAPI {
                                         @Field("email") String email,
                                         @Field("password") String password);
 
+    @FormUrlEncoded
+    @POST("savePet.php")
+    Call<String>  saveNewPet(
+            @Field("name") String name,
+            @Field("species") String species,
+            @Field("token") String token,
+            @Field("user_id") String userId
+    );
 
     }

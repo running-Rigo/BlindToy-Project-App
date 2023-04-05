@@ -15,7 +15,6 @@
         android:layout_marginEnd="24dp"
         android:hint="Wie heißt das Tier?"
         android:inputType="text"
-        android:selectAllOnFocus="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
@@ -30,7 +29,6 @@
         android:layout_marginEnd="24dp"
         android:hint="Gib die Tierart an"
         android:inputType="text"
-        android:selectAllOnFocus="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
@@ -51,5 +49,5 @@
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/pet_species"
-        app:layout_constraintVertical_bias="0.015" />
+        app:layout_constraintVertical_bias="0.141" />
 </androidx.constraintlayout.widget.ConstraintLayout>

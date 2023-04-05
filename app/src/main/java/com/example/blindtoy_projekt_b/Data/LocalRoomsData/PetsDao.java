@@ -15,5 +15,4 @@ public interface PetsDao {
 
     @Query("Select * from pet")
     List<Pet> getAll();
-
 }

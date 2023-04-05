@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
+import com.example.blindtoy_projekt_b.Data.LocalRoomsData.Pet;
 import com.example.blindtoy_projekt_b.Repositories.GeneralUserRepository;
 
 public class InternalSharedViewModel extends AndroidViewModel {
@@ -24,11 +25,16 @@ public class InternalSharedViewModel extends AndroidViewModel {
         userRepository = GeneralUserRepository.getInstance(application);
         repoErrorMessage = userRepository.repoErrorMessage;
         setNextFragmentDecision("");
+        setChosenPet(null);
         initObserver();
     }
     @Override
     protected void onCleared(){
         userRepository.asyncStatusUpdate.removeObserver(asyncStatusObserver);
+    }
+
+    public void setChosenPet(Pet chosenPet){
+        userRepository.setOneChosenPet(chosenPet);
     }
 
     private void initObserver(){
@@ -46,12 +52,9 @@ public class InternalSharedViewModel extends AndroidViewModel {
         userRepository.asyncStatusUpdate.observeForever(asyncStatusObserver);
     }
 
+
     public void doLogout(){
         userRepository.logoutUser();
-    }
-
-    public void chooseAddPet(){
-        setNextFragmentDecision("AddPetFragment");
     }
 
 
@@ -61,6 +64,11 @@ public class InternalSharedViewModel extends AndroidViewModel {
         Log.d(TAG,"Method setNextFragmentDecision aufgerufen: " + nextFragmentDecision.getValue().toString());
     }
 
+//region Layout-Changes
+
+    public void chooseAddPet(){
+        setNextFragmentDecision("AddPetFragment");
+    }
     private void chooseLogout(){
         setNextFragmentDecision("MainActivity");
     }
@@ -68,4 +76,9 @@ public class InternalSharedViewModel extends AndroidViewModel {
     public void choosePetsOverview(){
         setNextFragmentDecision("PetsListFragment");
     }
+    public void chooseOnePet(){
+        setNextFragmentDecision("OnePetActivity");
+    }
+    //endregion
+
 }

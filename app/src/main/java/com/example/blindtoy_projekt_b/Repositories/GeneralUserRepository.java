@@ -1,17 +1,21 @@
 package com.example.blindtoy_projekt_b.Repositories;
 
 import android.app.Application;
+import android.content.AsyncQueryHandler;
 import android.database.sqlite.SQLiteException;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.loader.content.AsyncTaskLoader;
 
 import com.example.blindtoy_projekt_b.Data.LocalRoomsData.Pet;
 import com.example.blindtoy_projekt_b.Data.LocalRoomsData.User;
 import com.example.blindtoy_projekt_b.Data.LocalRoomsData.UserDatabase;
 import com.example.blindtoy_projekt_b.Data.ServerData.ServerAPI;
+import com.example.blindtoy_projekt_b.Entities.Credentials;
+import com.example.blindtoy_projekt_b.Entities.ServerDbPet;
 import com.example.blindtoy_projekt_b.Entities.ServerDbUser;
 
 import java.util.ArrayList;
@@ -33,6 +37,8 @@ public class GeneralUserRepository {
     private ServerAPI serverAPI;
     private UserDatabase userDatabase;
 
+    private Credentials userDetails;
+
 
     //region LiveData Variables - always a private mutable version and the public immutable one
     private MutableLiveData<String> mutableRepoErrorMessage = new MutableLiveData<>();
@@ -43,6 +49,8 @@ public class GeneralUserRepository {
 
     private MutableLiveData<ArrayList<Pet>> mutableUserPetsList = new MutableLiveData<>();
     public LiveData<ArrayList<Pet>> userPetsList;
+
+    private Pet oneChosenPet;
 
     //endregion
 
@@ -69,6 +77,13 @@ public class GeneralUserRepository {
         return myUserRepository;
     }
 
+    public void setOneChosenPet(Pet chosenPet){
+        oneChosenPet = chosenPet;
+    }
+    public Pet getOneChosenPet(){
+        return this.oneChosenPet;
+    }
+
 //region Methods for LiveData setting
     private void setRepoErrorMessage(String errorString){
         mutableRepoErrorMessage.setValue(errorString);
@@ -83,7 +98,9 @@ public class GeneralUserRepository {
     private void setUserPetsList(ArrayList<Pet> list){
         mutableUserPetsList.setValue(list);
         userPetsList = mutableUserPetsList;
+        Log.d(TAG,"put pets from rooms into userpetslist");
     }
+
 //endregion
 
 //region Loading KnownUser
@@ -99,11 +116,11 @@ public class GeneralUserRepository {
         //if queryUserAsyncTask results in a valid resultUser-Object, pets are automatically queried from Rooms and saved to LiveData userPetsList
     }
 
-    private class QueryUserAsyncTask extends AsyncTask<Void,Void,User>{
+    private class QueryUserAsyncTask extends AsyncTask<Void,Void,Credentials>{
         @Override
-        protected User doInBackground(Void... voids) {
+        protected Credentials doInBackground(Void... voids) {
             List<User> knownUsers = null;
-            User knownUser = null;
+            User knownUser = new User();
             try{
                 knownUsers = UserDatabase.getInstance(application).userDao().getAll();
             }
@@ -116,33 +133,36 @@ public class GeneralUserRepository {
                 Log.d(TAG,"angemeldeter User gefunden: " + knownUser.toString()); //print to console for testing
             }
             else if(knownUsers.size()>1){
-                knownUser = new User();
                 knownUser.userID = "invalid";
                 Log.d(TAG,"Mehrere User in Rooms gefunden" );
             }
             else{
                 Log.d(TAG,"keine User in Rooms gefunden" ); //print to console for testing
             }
-            return knownUser;
+            Credentials userData = new Credentials(knownUser.getApiKey(), knownUser.getUserID());
+            Log.d(TAG, userData.toString());
+            return userData;
         }
 
         @Override
-        protected void onPostExecute(User knownUser){
-            if(knownUser != null){
-                if(knownUser.userID.equals("invalid")){
+        protected void onPostExecute(Credentials userData){
+                if(userData.getUserId() == "invalid"){
                     setRepoErrorMessage("Invalid state of local userdata in Rooms - logged out.");
                     logoutUser();
                 }
-                else{
-                    setAsyncStatusUpdate("loginSuccessful");
-                    queryPetsFromRooms(knownUser);
+                else if(userData.getUserId() == null){
+                    Log.d(TAG, "kein User gespeichert");
                 }
-            }
+                else{
+                    userDetails = userData; //Token and User_id are now available
+                    setAsyncStatusUpdate("loginSuccessful");
+                    queryPetsFromRooms();
+                }
         }
     }
 
     //Query Pets is only Called when a knownUser-Object was created from Rooms-Data:
-    public void queryPetsFromRooms(User knownUser){
+    public void queryPetsFromRooms(){
         Log.d(TAG, "methode queryPetsFromRooms aufgerufen");
         QueryPetsAsyncTask queryPetsAsyncTask = new QueryPetsAsyncTask();
         queryPetsAsyncTask.execute();
@@ -213,13 +233,16 @@ public class GeneralUserRepository {
                     setRepoErrorMessage("Problem beim Abfragen des Users vom Server.");
                     return;
                 }
+
                 ServerDbUser loginResultUser = response.body();
                 if(loginResultUser != null){
                     Log.d(TAG, "succes, got user-details from server: "+ loginResultUser.toString());
                     //now the newly checked user has to be saved to the local rooms database only with username & id;
                     setAsyncStatusUpdate("loginSuccessful");
                     saveUserToRoomsAsync(loginResultUser);
-                    savePetsToRoomsAsync(loginResultUser);
+                    if(loginResultUser.getPetsList().size()>0) {
+                        savePetsToRoomsAsync(loginResultUser);
+                    }
                 }
                 else{
                     Log.d(TAG, "responseUser ist null");
@@ -238,6 +261,7 @@ public class GeneralUserRepository {
         User newUser = new User();
         newUser.userName = loginResultUser.getName();
         newUser.userID = loginResultUser.getUser_id();
+        newUser.apiKey = loginResultUser.getApiKey();
         SaveUserAsyncTask saveUserAsyncTask = new SaveUserAsyncTask();
         saveUserAsyncTask.execute(newUser);
     }
@@ -261,12 +285,16 @@ public class GeneralUserRepository {
             if(!result.equals("successful")){
                 setRepoErrorMessage("User konnte nicht lokal gespeichert werden: "+ result);
             }
+            else{
+                Log.d(TAG,"user logged in, saved to rooms, now method checkForKnownUser() aufgerufen");
+                checkForKnownUser();
+            }
         }
     }
 
     //3.save pets from external DB to rooms
     public void savePetsToRoomsAsync(ServerDbUser loginResultUser){
-        Log.d(TAG, "Methode saveUserToRooms aufgerufen");
+        Log.d(TAG, "Methode savePetsToRooms aufgerufen");
         SavePetsAsyncTask savePetsAsyncTask = new SavePetsAsyncTask();
         savePetsAsyncTask.execute(loginResultUser.getPetsList());
     }
@@ -289,6 +317,9 @@ public class GeneralUserRepository {
             if(!result.equals("successful")){
                 setRepoErrorMessage("Haustiere konnte nicht lokal gespeichert werden: "+ result);
             }
+            else if(result.equals("successful")){
+                queryPetsFromRooms();
+            }
         }
     }
 //endregion
@@ -304,9 +335,11 @@ public class GeneralUserRepository {
         protected String doInBackground(Void...voids) {
             try{
                 userDatabase.clearAllTables();
+                Log.d(TAG,"LogoutUser() - Rooms tables cleared");
                 return "success";
             }
             catch (SQLiteException e){
+                Log.d(TAG,"LogoutUser() - tables couldnt be cleared");
                 return e.toString();
             }
         }
@@ -315,7 +348,7 @@ public class GeneralUserRepository {
         protected void onPostExecute(String result){
             if(result.equals("success")){
                 setAsyncStatusUpdate("logoutSuccessful");
-                Log.d("userrepository","backgroundtask finished");
+                Log.d(TAG,"backgroundtask finished");
             }
             else{
                 setRepoErrorMessage(result);
@@ -323,12 +356,42 @@ public class GeneralUserRepository {
         }
     }
     //endregion
+
 //region NewPet
     public void saveNewPet(String name, String species){
-        Log.d(TAG,"Pet  will be saved!");
-        //Method savePetExternal();
-        //onSuccess-> Method savePetToRooms();
-        setAsyncStatusUpdate("newPetSuccessful");
+        Call call = serverAPI.saveNewPet(name,species,userDetails.getApiToken(), userDetails.getUserId());
+        call.enqueue(new Callback() {
+            @Override
+            public void onResponse(Call call, Response response) {
+                if(!response.isSuccessful()){ //this if is important because the result object would be null if eg. there is error 404
+                    Log.e(TAG,"Could access server but didn't receive result.");
+                    return;
+                }
+                String responsePetId = response.body().toString();
+                Log.d(TAG,responsePetId);
+                try{
+                    int petId = Integer.parseInt(responsePetId);
+                    Pet newPet = new Pet(petId,name,species);
+                    saveNewPetToRooms(newPet);
+                    setAsyncStatusUpdate("newPetSuccessful");
+                }
+                catch (NumberFormatException ex){
+                    setRepoErrorMessage(responsePetId);
+                }
+            }
+
+            @Override
+            public void onFailure(Call call, Throwable t) {
+                setRepoErrorMessage(t.toString());
+            }
+        });
+    }
+
+    private void saveNewPetToRooms(Pet newPet){
+        ArrayList<Pet> onePetList = new ArrayList<>();
+        onePetList.add(newPet);
+        ServerDbUser placeHolderPetOwner = new ServerDbUser(onePetList);
+        savePetsToRoomsAsync(placeHolderPetOwner);
     }
 //endregion
 }

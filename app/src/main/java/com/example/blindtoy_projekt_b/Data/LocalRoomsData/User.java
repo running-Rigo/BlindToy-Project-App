@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 public class User {
     @PrimaryKey @NotNull
     public String userID;
-
+    public String apiKey;
     public String userName;
 
 /*
@@ -20,11 +20,24 @@ public class User {
 
  */
 
+    @NotNull
+    public String getUserID() {
+        return userID;
+    }
+
+    public String getApiKey() {
+        return apiKey;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
 
     @Override
     public String toString() {
         return "User{" +
                 "userID='" + userID + '\'' +
+                ", apiKey='" + apiKey + '\'' +
                 ", userName='" + userName + '\'' +
                 '}';
     }
