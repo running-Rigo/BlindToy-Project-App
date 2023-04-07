@@ -15,7 +15,7 @@ import com.example.blindtoy_projekt_b.ViewModels.Login.SharedViewModel;
 import com.example.blindtoy_projekt_b.Views.Internal.InternalMainActivity;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "L_MainActivity";
     SharedViewModel sharedViewModel;
 
     @Override

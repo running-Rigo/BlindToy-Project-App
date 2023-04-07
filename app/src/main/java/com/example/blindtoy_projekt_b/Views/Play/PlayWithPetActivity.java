@@ -12,7 +12,7 @@ import com.example.blindtoy_projekt_b.Views.Internal.InternalMainActivity;
 import com.example.blindtoy_projekt_b.Views.Login.MainActivity;
 
 public class PlayWithPetActivity extends AppCompatActivity {
-    private static final String TAG = "PlayWithPetActivity";
+    private static final String TAG = "L_PlayWithPetActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

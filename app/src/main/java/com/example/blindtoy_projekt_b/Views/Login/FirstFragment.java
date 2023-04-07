@@ -15,7 +15,7 @@ import com.example.blindtoy_projekt_b.R;
 import com.example.blindtoy_projekt_b.ViewModels.Login.SharedViewModel;
 
 public class FirstFragment extends Fragment {
-    private static final String TAG = "FirstFragment";
+    private static final String TAG = "L_FirstFragment";
     SharedViewModel sharedViewModel;
     Button loginButton;
     Button registrationButton;

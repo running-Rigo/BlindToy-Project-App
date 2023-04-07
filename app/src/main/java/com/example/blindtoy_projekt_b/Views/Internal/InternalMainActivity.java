@@ -15,14 +15,11 @@ import android.widget.Toast;
 
 import com.example.blindtoy_projekt_b.R;
 import com.example.blindtoy_projekt_b.ViewModels.Internal.InternalSharedViewModel;
-import com.example.blindtoy_projekt_b.Views.Game.OnePetActivity;
-import com.example.blindtoy_projekt_b.Views.Game.OnePetFragment;
-import com.example.blindtoy_projekt_b.Views.Play.PlayWithPetActivity;
-import com.example.blindtoy_projekt_b.Views.Game.SoundSettingsFragment;
+import com.example.blindtoy_projekt_b.Views.Game.OnePet.OnePetActivity;
 import com.example.blindtoy_projekt_b.Views.Login.MainActivity;
 
 public class InternalMainActivity extends AppCompatActivity {
-    private static final String TAG = "InternalMainActivity";
+    private static final String TAG = "L_InternalMainActivity";
     private InternalSharedViewModel internalSharedViewModel;
 
     private Button logoutBtn;
@@ -91,7 +88,7 @@ public class InternalMainActivity extends AppCompatActivity {
         });
 
         //Observer for Error-Toasts
-        internalSharedViewModel.repoErrorMessage.observe(this, new Observer<String>() {
+        internalSharedViewModel.reposErrorMessage.observe(this, new Observer<String>() {
             @Override
             public void onChanged(String errorMessage) {
                 if(!errorMessage.equals("")){

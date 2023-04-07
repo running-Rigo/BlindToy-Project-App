@@ -14,7 +14,7 @@ import com.example.blindtoy_projekt_b.Data.LocalRoomsData.User;
 import com.example.blindtoy_projekt_b.Repositories.GeneralUserRepository;
 
 public class SharedViewModel extends AndroidViewModel {
-    private static final String TAG = "SharedViewModel";
+    private static final String TAG = "L_SharedViewModel";
     private GeneralUserRepository userRepository;
     public LiveData<String> nextFragmentDecision;
     private MutableLiveData<String> nextUI = new MutableLiveData<>();

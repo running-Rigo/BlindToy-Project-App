@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Views.Game.OnePetActivity">
+    tools:context=".Views.Game.OnePet.OnePetActivity">
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/onepet_fragment_container_view"
-        android:name="com.example.blindtoy_projekt_b.Views.Game.OnePetFragment"
+        android:name="com.example.blindtoy_projekt_b.Views.Game.OnePet.OnePetFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="0dp"

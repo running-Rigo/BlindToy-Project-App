@@ -13,6 +13,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.blindtoy_projekt_b.Repositories.GeneralUserRepository;
 
 public class LoginViewModel extends AndroidViewModel {
+    private static final String TAG = "L_LoginViewModel";
     private GeneralUserRepository userRepository;
     private MutableLiveData<Boolean> mutableInProgress = new MediatorLiveData<>();
     public LiveData<Boolean> inProgress;

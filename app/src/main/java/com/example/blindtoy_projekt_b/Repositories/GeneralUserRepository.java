@@ -1,21 +1,18 @@
 package com.example.blindtoy_projekt_b.Repositories;
 
 import android.app.Application;
-import android.content.AsyncQueryHandler;
 import android.database.sqlite.SQLiteException;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.loader.content.AsyncTaskLoader;
 
-import com.example.blindtoy_projekt_b.Data.LocalRoomsData.Pet;
+import com.example.blindtoy_projekt_b.Entities.Pet;
 import com.example.blindtoy_projekt_b.Data.LocalRoomsData.User;
 import com.example.blindtoy_projekt_b.Data.LocalRoomsData.UserDatabase;
 import com.example.blindtoy_projekt_b.Data.ServerData.ServerAPI;
 import com.example.blindtoy_projekt_b.Entities.Credentials;
-import com.example.blindtoy_projekt_b.Entities.ServerDbPet;
 import com.example.blindtoy_projekt_b.Entities.ServerDbUser;
 
 import java.util.ArrayList;
@@ -28,32 +25,28 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class GeneralUserRepository {
-    //static variables
-    private static final String TAG = "GeneralUserRepository";
+//region *Attributes
+    //static attributes
+    private static final String TAG = "L_GeneralUserRepository";
     private static GeneralUserRepository myUserRepository;
 
-    //instance variables
+    //instance attributes
     private Application application;
     private ServerAPI serverAPI;
     private UserDatabase userDatabase;
+    private PetsRepository petsRepository;
 
-    private Credentials userDetails;
+    Credentials userDetails;
 
-
-    //region LiveData Variables - always a private mutable version and the public immutable one
+    //repo-updates for viewmodels
     private MutableLiveData<String> mutableRepoErrorMessage = new MutableLiveData<>();
     public LiveData<String> repoErrorMessage;
 
     private MutableLiveData<String> mutableAsyncStatusUpdate = new MutableLiveData<>();
     public LiveData<String> asyncStatusUpdate;
+//endregion
 
-    private MutableLiveData<ArrayList<Pet>> mutableUserPetsList = new MutableLiveData<>();
-    public LiveData<ArrayList<Pet>> userPetsList;
-
-    private Pet oneChosenPet;
-
-    //endregion
-
+//region *Constructor & Co
     private GeneralUserRepository(Application application){
         this.application = application;
         //Server-Api is implemented via retrofit:
@@ -62,11 +55,11 @@ public class GeneralUserRepository {
                 .addConverterFactory(GsonConverterFactory.create()).build();
         setRepoErrorMessage("");
         setAsyncStatusUpdate("");
-        setUserPetsList(null);
         this.serverAPI = retrofit.create(ServerAPI.class); //Retrofit implements the interface methods
         userDatabase = UserDatabase.getInstance(application);
+        petsRepository = PetsRepository.getInstance(application);
         //At appstart when userrepo is instantiated:
-        checkForKnownUser();
+        queryUserFromRooms();
     }
 
     //Get Instance Method
@@ -77,14 +70,9 @@ public class GeneralUserRepository {
         return myUserRepository;
     }
 
-    public void setOneChosenPet(Pet chosenPet){
-        oneChosenPet = chosenPet;
-    }
-    public Pet getOneChosenPet(){
-        return this.oneChosenPet;
-    }
+//endregion
 
-//region Methods for LiveData setting
+//region *LiveData Setting
     private void setRepoErrorMessage(String errorString){
         mutableRepoErrorMessage.setValue(errorString);
         this.repoErrorMessage = mutableRepoErrorMessage;
@@ -94,26 +82,41 @@ public class GeneralUserRepository {
         mutableAsyncStatusUpdate.setValue(status);
         asyncStatusUpdate = mutableAsyncStatusUpdate;
     }
-
-    private void setUserPetsList(ArrayList<Pet> list){
-        mutableUserPetsList.setValue(list);
-        userPetsList = mutableUserPetsList;
-        Log.d(TAG,"put pets from rooms into userpetslist");
-    }
-
 //endregion
 
-//region Loading KnownUser
-    public void checkForKnownUser(){
-        Log.d(TAG, "methode checkforknownusers aufgerufen");
-        queryUserFromRooms();
-        //if a User is saved in Rooms users Table, then queryPetsFromRooms is called
+//region *Registration of new User in external DB
+    public void registerNewUserInDb(String username, String email, String password){
+        Call call = serverAPI.registerNewUser(username,email,password);
+        call.enqueue(new Callback() {
+            @Override
+            public void onResponse(Call call, Response response) {
+                if(!response.isSuccessful()){ //this if is important because the result object would be null if eg. there is error 404
+                    Log.e(TAG,"Could access server but didn't receive result.");
+                    return;
+                }
+                String registrationResponse = response.body().toString();
+                Log.d(TAG,registrationResponse);
+                if(registrationResponse.toLowerCase().equals("success")){
+                    setAsyncStatusUpdate("registrationSuccessful");
+                }
+                else{
+                    setRepoErrorMessage(registrationResponse);
+                }
+            }
+            @Override
+            public void onFailure(Call call, Throwable t) {
+                setRepoErrorMessage(t.toString());
+            }
+        });
     }
+//endregion
 
+//region *Querying known User from Rooms
     public void queryUserFromRooms() {
+        Log.d(TAG, "methode queryUserFromRooms aufgerufen");
         QueryUserAsyncTask queryUserAsyncTask = new QueryUserAsyncTask();
         queryUserAsyncTask.execute();
-        //if queryUserAsyncTask results in a valid resultUser-Object, pets are automatically queried from Rooms and saved to LiveData userPetsList
+        //if queryUserAsyncTask results in a valid resultUser-Object, a request to the server is sent with api-token and user_id; server returns DbUser-Object
     }
 
     private class QueryUserAsyncTask extends AsyncTask<Void,Void,Credentials>{
@@ -153,75 +156,52 @@ public class GeneralUserRepository {
                 else if(userData.getUserId() == null){
                     Log.d(TAG, "kein User gespeichert");
                 }
-                else{
-                    userDetails = userData; //Token and User_id are now available
-                    setAsyncStatusUpdate("loginSuccessful");
-                    queryPetsFromRooms();
+                else{ // user-object with normal valid data found:
+                    userDetails = userData; //Token and User_id are stored in userRepo.
+                    petsRepository.userDetails = userData; //Token and User_id are now available in PetsRepo
+                    getUserDataFromServer();
                 }
-        }
-    }
-
-    //Query Pets is only Called when a knownUser-Object was created from Rooms-Data:
-    public void queryPetsFromRooms(){
-        Log.d(TAG, "methode queryPetsFromRooms aufgerufen");
-        QueryPetsAsyncTask queryPetsAsyncTask = new QueryPetsAsyncTask();
-        queryPetsAsyncTask.execute();
-    }
-    class QueryPetsAsyncTask extends AsyncTask<Void,Void,ArrayList<Pet>> {
-        @Override
-        protected ArrayList<Pet> doInBackground(Void... voids) {
-            try{
-                ArrayList<Pet> knownPets = (ArrayList<Pet>) UserDatabase.getInstance(application).petsDao().getAll();
-                if(knownPets.size()>0){
-                    for(int i = 0; i < knownPets.size(); i++){
-                        Log.d(TAG,"knownPets gefunden: " + knownPets.get(i).toString()); //print to console for testing
-                    }
-                }
-                else{
-                    Log.d(TAG,"knownPets: scheinbar keine Pets in Rooms-DB..." ); //print to console for testing
-                }
-                return knownPets;
-            }
-            catch (SQLiteException e){
-                return null;
-            }
-        }
-        @Override
-        protected void onPostExecute(ArrayList<Pet> knownPets){
-            setUserPetsList(knownPets);
         }
     }
 //endregion
 
-//region Registration
-    public void registerNewUserInDb(String username, String email, String password){
-        Call call = serverAPI.registerNewUser(username,email,password);
-        call.enqueue(new Callback() {
+//region *Usertoken found - query other userdata from server
+    private void getUserDataFromServer(){
+        Call<ServerDbUser> call = serverAPI.checkUserToken(userDetails.getApiToken(), userDetails.getUserId());
+        call.enqueue(new Callback<ServerDbUser>() {
             @Override
-            public void onResponse(Call call, Response response) {
-                if(!response.isSuccessful()){ //this if is important because the result object would be null if eg. there is error 404
+            public void onResponse(Call<ServerDbUser> call, Response<ServerDbUser> response) {
+                if(!response.isSuccessful()){
                     Log.e(TAG,"Could access server but didn't receive result.");
+                    setRepoErrorMessage("Problem beim Abfragen des Users vom Server.");
                     return;
                 }
-                String registrationResponse = response.body().toString();
-                Log.d(TAG,registrationResponse);
-                if(registrationResponse.toLowerCase().equals("success")){
-                    setAsyncStatusUpdate("registrationSuccessful");
+                ServerDbUser loginResultUser = response.body();
+                if(loginResultUser != null){
+                    Log.d(TAG, "succes, got user-details from server: "+ loginResultUser.toString());
+                    //now the newly checked user has to be saved to the local rooms database only with username & id;
+                    setAsyncStatusUpdate("loginSuccessful");
+                    saveUserToRoomsAsync(loginResultUser); //replace old user in rooms by new user (probably the same, but maybe username changed
+                    if(loginResultUser.getPetsList().size()>0) {
+                        petsRepository.setUserPetsList((ArrayList<Pet>) loginResultUser.getPetsList());
+                    }
                 }
                 else{
-                    setRepoErrorMessage(registrationResponse);
+                    Log.d(TAG, "responseUser ist null");
+                    setRepoErrorMessage("Anmeldung fehlgeschlagen - Token ungültig");
                 }
             }
 
             @Override
-            public void onFailure(Call call, Throwable t) {
+            public void onFailure(Call<ServerDbUser> call, Throwable t) {
                 setRepoErrorMessage(t.toString());
             }
         });
     }
 //endregion
 
-//region Login
+//region *Login (1.validation of credentials by external server | 2.saving returned ServerDBUser Object as User to Rooms | 3.if petsList > 0, petsRepository.savePetsToRoomsAsync(loginResultUser) is called
+
     //1.login validation with external server
     public void checkCredentialsInDb(String email, String password){
         Call<ServerDbUser> call = serverAPI.checkUserLogin(email,password);
@@ -241,8 +221,9 @@ public class GeneralUserRepository {
                     setAsyncStatusUpdate("loginSuccessful");
                     saveUserToRoomsAsync(loginResultUser);
                     if(loginResultUser.getPetsList().size()>0) {
-                        savePetsToRoomsAsync(loginResultUser);
+                        petsRepository.setUserPetsList((ArrayList<Pet>) loginResultUser.getPetsList());
                     }
+
                 }
                 else{
                     Log.d(TAG, "responseUser ist null");
@@ -286,47 +267,17 @@ public class GeneralUserRepository {
                 setRepoErrorMessage("User konnte nicht lokal gespeichert werden: "+ result);
             }
             else{
-                Log.d(TAG,"user logged in, saved to rooms, now method checkForKnownUser() aufgerufen");
-                checkForKnownUser();
+                Log.d(TAG,"user logged in and saved to rooms for staying logged in.");
             }
         }
     }
 
-    //3.save pets from external DB to rooms
-    public void savePetsToRoomsAsync(ServerDbUser loginResultUser){
-        Log.d(TAG, "Methode savePetsToRooms aufgerufen");
-        SavePetsAsyncTask savePetsAsyncTask = new SavePetsAsyncTask();
-        savePetsAsyncTask.execute(loginResultUser.getPetsList());
-    }
-    private class SavePetsAsyncTask extends AsyncTask<List<Pet>,Void,String> {
-        @Override
-        protected String doInBackground(List<Pet>...petsList) {
-            String result;
-            try{
-                userDatabase.petsDao().insertAllPets(petsList[0]);
-                result = "successful";
-            }
-            catch(SQLiteException ex){
-                result = ex.toString();
-            }
-            return result;
-        }
-
-        @Override
-        protected void onPostExecute(String result){
-            if(!result.equals("successful")){
-                setRepoErrorMessage("Haustiere konnte nicht lokal gespeichert werden: "+ result);
-            }
-            else if(result.equals("successful")){
-                queryPetsFromRooms();
-            }
-        }
-    }
 //endregion
 
-//region Logout
+//region *Logout
     public void logoutUser(){
-        setUserPetsList(null);
+        petsRepository.setUserPetsList(new ArrayList<Pet>());
+        petsRepository.setOneChosenPet(0);
         DeleteAsyncTask deleteAsyncTask = new DeleteAsyncTask();
         deleteAsyncTask.execute();
     }
@@ -356,44 +307,6 @@ public class GeneralUserRepository {
         }
     }
     //endregion
-
-//region NewPet
-    public void saveNewPet(String name, String species){
-        Call call = serverAPI.saveNewPet(name,species,userDetails.getApiToken(), userDetails.getUserId());
-        call.enqueue(new Callback() {
-            @Override
-            public void onResponse(Call call, Response response) {
-                if(!response.isSuccessful()){ //this if is important because the result object would be null if eg. there is error 404
-                    Log.e(TAG,"Could access server but didn't receive result.");
-                    return;
-                }
-                String responsePetId = response.body().toString();
-                Log.d(TAG,responsePetId);
-                try{
-                    int petId = Integer.parseInt(responsePetId);
-                    Pet newPet = new Pet(petId,name,species);
-                    saveNewPetToRooms(newPet);
-                    setAsyncStatusUpdate("newPetSuccessful");
-                }
-                catch (NumberFormatException ex){
-                    setRepoErrorMessage(responsePetId);
-                }
-            }
-
-            @Override
-            public void onFailure(Call call, Throwable t) {
-                setRepoErrorMessage(t.toString());
-            }
-        });
-    }
-
-    private void saveNewPetToRooms(Pet newPet){
-        ArrayList<Pet> onePetList = new ArrayList<>();
-        onePetList.add(newPet);
-        ServerDbUser placeHolderPetOwner = new ServerDbUser(onePetList);
-        savePetsToRoomsAsync(placeHolderPetOwner);
-    }
-//endregion
 }
 
 

@@ -1,8 +1,5 @@
 package com.example.blindtoy_projekt_b.Entities;
 
-import com.example.blindtoy_projekt_b.Data.LocalRoomsData.Pet;
-import com.example.blindtoy_projekt_b.Data.LocalRoomsData.Pet;
-
 import java.util.ArrayList;
 import java.util.List;
 

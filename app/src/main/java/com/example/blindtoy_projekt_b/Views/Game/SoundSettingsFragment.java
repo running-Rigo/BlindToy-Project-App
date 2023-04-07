@@ -19,19 +19,24 @@ import android.widget.Toast;
 
 import com.example.blindtoy_projekt_b.R;
 import com.example.blindtoy_projekt_b.ViewModels.Game.SharedOnePetViewModel;
+import com.example.blindtoy_projekt_b.ViewModels.Game.SoundSettingsViewModel;
+import com.example.blindtoy_projekt_b.ViewModels.Internal.PetsListViewModel;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 
 public class SoundSettingsFragment extends Fragment {
-    private static final String TAG = "SoundSettingsFragment";
+    private static final String TAG = "L_SoundSettingsFragment";
     private SharedOnePetViewModel sharedOnePetViewModel;
+    private SoundSettingsViewModel soundSettingsViewModel;
     private View view;
     private String[] files1Array = {"Da komm her", "Such such", "Miau","*schnalz-Geräusch*"};
     private String[] files2Array = {"Da komm her", "Such such", "Miau","*schnalz-Geräusch*"};
     private String[] pitchesArray = {"tiefe Tonlage", "mittlere Tonlage", "hoche Tonlage"};
     private String[] speedArray = {"langsam", "mittel", "schnell"};
     private String[] beatsArray = {"beep", "beep-beep", "beep-beeeeep","beeeep"};
-    Spinner spinnerFile1,spinnerFile2,spinnerPitch,spinnerSpeed,spinnerBeat;
-    ArrayAdapter<String> adapterFile1,adapterFile2,adapterPitch,adapterSpeed,adapterBeat;
+    private Spinner spinnerFile1,spinnerFile2,spinnerPitch,spinnerSpeed,spinnerBeat;
+    private ArrayAdapter<String> adapterFile1,adapterFile2,adapterPitch,adapterSpeed,adapterBeat;
+    private FloatingActionButton saveSettings;
 
 
     public SoundSettingsFragment() {
@@ -44,6 +49,7 @@ public class SoundSettingsFragment extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_sound_settings, container, false);
         sharedOnePetViewModel = new ViewModelProvider(requireActivity()).get(SharedOnePetViewModel.class);
+        soundSettingsViewModel = new ViewModelProvider(this).get(SoundSettingsViewModel.class);
         initViews();
         Log.d(TAG,"geöffnet!");
         return view;
@@ -60,6 +66,14 @@ public class SoundSettingsFragment extends Fragment {
         initSpinner(spinnerSpeed,adapterSpeed,speedArray);
         spinnerBeat = view.findViewById(R.id.dropdown_beat);
         initSpinner(spinnerBeat,adapterBeat,beatsArray);
+
+        saveSettings = view.findViewById(R.id.save_settings_button);
+        saveSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //soundSettingsViewModel.saveSettings();
+            }
+        });
     }
 
 

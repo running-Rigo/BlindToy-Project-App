@@ -2,7 +2,6 @@ package com.example.blindtoy_projekt_b.ViewModels.Game;
 
 import android.app.Application;
 import android.util.Log;
-import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -10,27 +9,31 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
-import com.example.blindtoy_projekt_b.Data.LocalRoomsData.Pet;
+import com.example.blindtoy_projekt_b.Entities.Pet;
 import com.example.blindtoy_projekt_b.Repositories.GeneralUserRepository;
-
-import java.sql.BatchUpdateException;
+import com.example.blindtoy_projekt_b.Repositories.PetsRepository;
 
 public class SharedOnePetViewModel extends AndroidViewModel {
-    private static final String TAG = "SharedOnePetViewModel";
+    private static final String TAG = "L_SharedOnePetViewModel";
     private GeneralUserRepository userRepository;
+    private PetsRepository petsRepository;
     public LiveData<Pet> chosenPet;
     private MutableLiveData<Pet> mutableChosenPet = new MutableLiveData<>();
     public LiveData<String> nextFragmentDecision;
     private MutableLiveData<String> nextUI = new MutableLiveData<>();
     public LiveData<String> repoErrorMessage;
-    private Observer<String> asyncStatusObserver;
+    //
+    private Observer<String> userAsyncStatusObserver;
+    private Observer<String> petsAsyncStatusObserver;
+
 
     private boolean hasSettings = false;
 
     public SharedOnePetViewModel(@NonNull Application application) {
         super(application);
         userRepository = GeneralUserRepository.getInstance(application);
-        setChosenPet(userRepository.getOneChosenPet()); //takes at creation only once the chosenPet from userrepo
+        petsRepository = PetsRepository.getInstance(application);
+        setChosenPet(petsRepository.getOneChosenPet()); //takes at creation only once the chosenPet from userrepo
         setNextFragmentDecision("");
         repoErrorMessage = userRepository.repoErrorMessage;
         initObserver();
@@ -38,24 +41,37 @@ public class SharedOnePetViewModel extends AndroidViewModel {
 
     @Override
     protected void onCleared(){
-        userRepository.asyncStatusUpdate.removeObserver(asyncStatusObserver);
+        userRepository.asyncStatusUpdate.removeObserver(userAsyncStatusObserver);
+        petsRepository.asyncStatusUpdate.removeObserver(petsAsyncStatusObserver);
     }
 
     private void initObserver(){
-        asyncStatusObserver = new Observer<String>() {
+        userAsyncStatusObserver = new Observer<String>() {
             @Override
-            public void onChanged(String repoStatus) {
-                if(repoStatus.equals("logoutSuccessful")){
+            public void onChanged(String userRepoStatus) {
+                if(userRepoStatus.equals("logoutSuccessful")){
                     chooseLogout();
                 }
             }
         };
-        userRepository.asyncStatusUpdate.observeForever(asyncStatusObserver);
-    }
+        userRepository.asyncStatusUpdate.observeForever(userAsyncStatusObserver);
 
+        petsAsyncStatusObserver = new Observer<String>() {
+            @Override
+            public void onChanged(String petsRepoStatus) {
+                if(petsRepoStatus.equals("petDeletedSuccessful")){
+                    choosePetsList();
+                }
+            }
+        };
+    }
 
     public void doLogout(){
         userRepository.logoutUser();
+    }
+
+    public void deletePet(){
+        petsRepository.deletePet();
     }
 
 
@@ -64,12 +80,17 @@ public class SharedOnePetViewModel extends AndroidViewModel {
         chosenPet = mutableChosenPet;
     }
 
+
     public boolean getHasSettings() {
         return hasSettings;
     }
 
     public void setHasSettings(boolean hasSettings) {
         this.hasSettings = hasSettings;
+    }
+
+    private void choosePetsList(){
+        setNextFragmentDecision("InternalMainActivity");
     }
 
 

@@ -17,7 +17,7 @@ import com.example.blindtoy_projekt_b.ViewModels.Internal.AddPetViewModel;
 import com.example.blindtoy_projekt_b.ViewModels.Internal.InternalSharedViewModel;
 
 public class AddPetFragment extends Fragment {
-    private static final String TAG = "NewPetFragment";
+    private static final String TAG = "L_AddPetFragment";
     private EditText petName, petSpecies;
     private Button submitPetButton;
     private View view;

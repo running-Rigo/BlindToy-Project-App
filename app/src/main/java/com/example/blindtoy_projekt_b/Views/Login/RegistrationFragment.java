@@ -20,7 +20,7 @@ import com.example.blindtoy_projekt_b.ViewModels.Login.RegistrationViewModel;
 import com.example.blindtoy_projekt_b.ViewModels.Login.SharedViewModel;
 
 public class RegistrationFragment extends Fragment {
-    private static final String TAG = "RegistrationFragment";
+    private static final String TAG = "L_RegistrationFragment";
 
     View view;
     public SharedViewModel sharedViewModel;

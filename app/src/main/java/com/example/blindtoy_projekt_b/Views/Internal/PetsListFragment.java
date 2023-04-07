@@ -1,10 +1,8 @@
 package com.example.blindtoy_projekt_b.Views.Internal;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -17,19 +15,16 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.example.blindtoy_projekt_b.Data.LocalRoomsData.Pet;
+import com.example.blindtoy_projekt_b.Entities.Pet;
 import com.example.blindtoy_projekt_b.R;
 import com.example.blindtoy_projekt_b.ViewModels.Internal.InternalSharedViewModel;
 import com.example.blindtoy_projekt_b.ViewModels.Internal.PetsListViewModel;
-import com.example.blindtoy_projekt_b.Views.Game.OnePetActivity;
-import com.example.blindtoy_projekt_b.Views.Login.MainActivity;
-import com.example.blindtoy_projekt_b.Views.Login.RegistrationFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
 public class PetsListFragment extends Fragment {
-    private static final String TAG = "PetsListFragment";
+    private static final String TAG = "L_PetsListFragment";
     View view;
     InternalSharedViewModel internalSharedViewModel;
     PetsListViewModel petsListViewModel;
@@ -68,38 +63,23 @@ public class PetsListFragment extends Fragment {
             }
         });
         listView = view.findViewById(R.id.petsListView);
-        adapter = new ArrayAdapter<String>(getContext(), com.google.android.material.R.layout.support_simple_spinner_dropdown_item,petsToRender);
-        listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) { // i is position of item in list
                 Toast.makeText(getContext(),"Pet clicked: " + adapter.getItem(i), Toast.LENGTH_SHORT).show();
-                Pet chosenPet = localPetsList.get(i);
-                internalSharedViewModel.setChosenPet(chosenPet);
+                internalSharedViewModel.setChosenPet(i);
                 internalSharedViewModel.chooseOnePet();
             }
         });
     }
 
     private void initObservers(){
-        petsListViewModel.petsListFromRepo.observe(getViewLifecycleOwner(),new Observer<ArrayList<Pet>>() {
+        petsListViewModel.stringPetsList.observe(getViewLifecycleOwner(), new Observer<ArrayList<String>>() {
             @Override
-            public void onChanged(ArrayList<Pet> pets) {
+            public void onChanged(ArrayList<String> petsStrings) {
                 Log.d(TAG,"change in petslist noticed!");
-                localPetsList = pets;
-                if(localPetsList != null){
-                    if(localPetsList.size() == 0){
-                        petsToRender.add("Lege dein erstes Haustier an;");
-                    }
-                    for (Pet pet: localPetsList){
-                        String petDescription = pet.name +" (" + pet.species +")";
-                        petsToRender.add(petDescription);
-                    }
-                }
-                else{
-                    petsToRender = new ArrayList<>();
-                    petsToRender.add("Lege dein erstes Haustier an;");
-                }
+                adapter = new ArrayAdapter<String>(getContext(), com.google.android.material.R.layout.support_simple_spinner_dropdown_item,petsStrings);
+                listView.setAdapter(adapter);
             }
         });
     }

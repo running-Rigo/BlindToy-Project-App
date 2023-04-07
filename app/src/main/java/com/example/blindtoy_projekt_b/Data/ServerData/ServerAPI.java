@@ -16,6 +16,13 @@ public interface ServerAPI {
                                         @Field("password") String password);
 
     @FormUrlEncoded
+    @POST("checkUserLogin.php")
+    Call <ServerDbUser> checkUserToken(
+            @Field("token") String token,
+            @Field("user_id") String userId
+    );
+
+    @FormUrlEncoded
     @POST("registerNewUser.php")
     Call<String>  registerNewUser( //Posts new user credentials to the external database
                                         @Field("name") String username,
@@ -27,6 +34,7 @@ public interface ServerAPI {
     Call<String>  saveNewPet(
             @Field("name") String name,
             @Field("species") String species,
+            @Field("sounds") String sounds,
             @Field("token") String token,
             @Field("user_id") String userId
     );

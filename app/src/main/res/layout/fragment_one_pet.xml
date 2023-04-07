@@ -3,23 +3,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="20sp"
     android:background="#3B00BCD4">
 
     <TextView
         android:id="@+id/petsListHeader"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="152dp"
+        android:layout_marginTop="112dp"
         android:background="#B9CDDC39"
         android:fontFamily="sans-serif-black"
         android:padding="5sp"
         android:shadowColor="#FF5722"
         android:shadowRadius="3"
         android:text=""
+        android:textAlignment="center"
         android:textColor="#673AB7"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.4"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Deine Haustiere" />
@@ -53,13 +56,28 @@
 
     <ImageView
         android:id="@+id/speciesImg"
-        android:layout_width="161dp"
-        android:layout_height="108dp"
+        android:layout_width="198dp"
+        android:layout_height="129dp"
         android:layout_marginTop="20dp"
         android:background="@drawable/divers_btn_pic"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.53"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/petsListHeader" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/delete_pet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="56dp"
+        android:clickable="true"
+        app:layout_constraintBottom_toTopOf="@+id/petsListHeader"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.954"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.8"
+        app:srcCompat="@android:drawable/ic_menu_delete" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

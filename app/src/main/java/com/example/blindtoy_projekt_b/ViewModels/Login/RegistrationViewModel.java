@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer;
 import com.example.blindtoy_projekt_b.Repositories.GeneralUserRepository;
 
 public class RegistrationViewModel extends AndroidViewModel {
+    private static final String TAG = "L_RegistrationViewModel";
     GeneralUserRepository userRepository;
     Application application;
     private MutableLiveData<Boolean> mutableInProgress = new MediatorLiveData<>();

@@ -1,4 +1,4 @@
-package com.example.blindtoy_projekt_b.Views.Game;
+package com.example.blindtoy_projekt_b.Views.Game.OnePet;
 
 import android.os.Bundle;
 
@@ -14,18 +14,19 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.blindtoy_projekt_b.Data.LocalRoomsData.Pet;
+import com.example.blindtoy_projekt_b.Entities.Pet;
 import com.example.blindtoy_projekt_b.R;
-import com.example.blindtoy_projekt_b.ViewModels.Internal.InternalSharedViewModel;
 import com.example.blindtoy_projekt_b.ViewModels.Game.SharedOnePetViewModel;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class OnePetFragment extends Fragment {
-    private static final String TAG = "OnePetFragment";
+    private static final String TAG = "L_OnePetFragment";
     private View view;
     private SharedOnePetViewModel sharedOnePetViewModel;
     private Button settingsButton, playButton;
     private TextView petNameText;
     private ImageView speciesImg;
+    private FloatingActionButton deletePetButton;
 
 
     public OnePetFragment() {
@@ -48,6 +49,7 @@ public class OnePetFragment extends Fragment {
     private void initViews(){
         settingsButton = view.findViewById(R.id.settingsBtn);
         playButton = view.findViewById(R.id.playGameBtn);
+        deletePetButton = view.findViewById(R.id.delete_pet);
         speciesImg = view.findViewById(R.id.speciesImg);
         petNameText = view.findViewById(R.id.petsListHeader);
         if(!sharedOnePetViewModel.getHasSettings()){
@@ -65,6 +67,13 @@ public class OnePetFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 sharedOnePetViewModel.choosePlay();
+            }
+        });
+
+        deletePetButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sharedOnePetViewModel.deletePet();
             }
         });
     }

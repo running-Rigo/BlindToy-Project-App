@@ -1,4 +1,4 @@
-package com.example.blindtoy_projekt_b.Views.Game;
+package com.example.blindtoy_projekt_b.Views.Game.OnePet;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
@@ -13,12 +13,13 @@ import android.widget.Button;
 
 import com.example.blindtoy_projekt_b.R;
 import com.example.blindtoy_projekt_b.ViewModels.Game.SharedOnePetViewModel;
-import com.example.blindtoy_projekt_b.ViewModels.Internal.InternalSharedViewModel;
+import com.example.blindtoy_projekt_b.Views.Game.SoundSettingsFragment;
+import com.example.blindtoy_projekt_b.Views.Internal.InternalMainActivity;
 import com.example.blindtoy_projekt_b.Views.Login.MainActivity;
 import com.example.blindtoy_projekt_b.Views.Play.PlayWithPetActivity;
 
 public class OnePetActivity extends AppCompatActivity {
-    private static final String TAG = "OnePetActivity";
+    private static final String TAG = "L_OnePetActivity";
     private SharedOnePetViewModel sharedOnePetViewModel;
     private Button logoutBtn;
 
@@ -55,6 +56,11 @@ public class OnePetActivity extends AppCompatActivity {
                     //start MainActivity
                     Intent logoutIntent = new Intent(getApplicationContext(), MainActivity.class);
                     startActivity(logoutIntent);
+                }
+                else if(nextUI.equals("InternalMainActivity")){
+                    //start MainActivity
+                    Intent overviewIntent = new Intent(getApplicationContext(), InternalMainActivity.class);
+                    startActivity(overviewIntent);
                 }
                 else if(nextUI.equals("SoundSettingsFragment")){
                     //render SoundSettingsFragment
