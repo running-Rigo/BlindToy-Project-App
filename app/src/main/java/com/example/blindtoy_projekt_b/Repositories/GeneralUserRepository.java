@@ -113,6 +113,7 @@ public class GeneralUserRepository {
 
 //region *Querying known User from Rooms
     public void queryUserFromRooms() {
+        setAsyncStatusUpdate("isCheckingUser");
         Log.d(TAG, "methode queryUserFromRooms aufgerufen");
         QueryUserAsyncTask queryUserAsyncTask = new QueryUserAsyncTask();
         queryUserAsyncTask.execute();
@@ -151,10 +152,12 @@ public class GeneralUserRepository {
         protected void onPostExecute(Credentials userData){
                 if(userData.getUserId() == "invalid"){
                     setRepoErrorMessage("Invalid state of local userdata in Rooms - logged out.");
+                    setAsyncStatusUpdate("noUserFound");
                     logoutUser();
                 }
                 else if(userData.getUserId() == null){
                     Log.d(TAG, "kein User gespeichert");
+                    setAsyncStatusUpdate("noUserFound");
                 }
                 else{ // user-object with normal valid data found:
                     userDetails = userData; //Token and User_id are stored in userRepo.

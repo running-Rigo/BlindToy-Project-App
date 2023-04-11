@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.blindtoy_projekt_b.R;
 import com.example.blindtoy_projekt_b.ViewModels.Game.SharedOnePetViewModel;
@@ -82,5 +83,17 @@ public class OnePetActivity extends AppCompatActivity {
                 }
             }
         });
+
+        //Observer for Error-Toasts
+        sharedOnePetViewModel.repoErrorMessage.observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String errorMessage) {
+                if(!errorMessage.equals("")){
+                    Toast registrationError = Toast.makeText(getApplicationContext(),errorMessage, Toast.LENGTH_LONG);
+                    registrationError.show();
+                }
+            }
+        });
     }
+
 }

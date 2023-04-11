@@ -35,7 +35,7 @@ public class SharedOnePetViewModel extends AndroidViewModel {
         petsRepository = PetsRepository.getInstance(application);
         setChosenPet(petsRepository.getOneChosenPet()); //takes at creation only once the chosenPet from userrepo
         setNextFragmentDecision("");
-        repoErrorMessage = userRepository.repoErrorMessage;
+        repoErrorMessage = petsRepository.repoErrorMessage;
         initObserver();
     }
 
@@ -64,6 +64,7 @@ public class SharedOnePetViewModel extends AndroidViewModel {
                 }
             }
         };
+        petsRepository.asyncStatusUpdate.observeForever(petsAsyncStatusObserver);
     }
 
     public void doLogout(){

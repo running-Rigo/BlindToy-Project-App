@@ -30,9 +30,6 @@ public class PetsListFragment extends Fragment {
     PetsListViewModel petsListViewModel;
     ArrayAdapter<String> adapter;
     ListView listView;
-
-    ArrayList<Pet> localPetsList = new ArrayList<>();
-    ArrayList<String> petsToRender = new ArrayList<>();
     FloatingActionButton addPetButton;
 
 

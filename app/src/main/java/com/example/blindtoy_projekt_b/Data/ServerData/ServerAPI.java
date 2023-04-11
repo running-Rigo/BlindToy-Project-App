@@ -39,4 +39,11 @@ public interface ServerAPI {
             @Field("user_id") String userId
     );
 
+    @FormUrlEncoded
+    @POST("deletePet.php")
+    Call<String> deleteOnePet(
+            @Field("pet_id") String petId,
+            @Field("token") String token,
+            @Field("user_id") String userId
+    );
     }

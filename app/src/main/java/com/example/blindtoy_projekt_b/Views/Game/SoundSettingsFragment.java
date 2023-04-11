@@ -25,6 +25,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 
 public class SoundSettingsFragment extends Fragment {
+
+    //region Variables
     private static final String TAG = "L_SoundSettingsFragment";
     private SharedOnePetViewModel sharedOnePetViewModel;
     private SoundSettingsViewModel soundSettingsViewModel;
@@ -37,6 +39,7 @@ public class SoundSettingsFragment extends Fragment {
     private Spinner spinnerFile1,spinnerFile2,spinnerPitch,spinnerSpeed,spinnerBeat;
     private ArrayAdapter<String> adapterFile1,adapterFile2,adapterPitch,adapterSpeed,adapterBeat;
     private FloatingActionButton saveSettings;
+    //endregion
 
 
     public SoundSettingsFragment() {
@@ -71,12 +74,10 @@ public class SoundSettingsFragment extends Fragment {
         saveSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //soundSettingsViewModel.saveSettings();
+                soundSettingsViewModel.saveSettings();
             }
         });
     }
-
-
 
     private void initSpinner(Spinner spinner, ArrayAdapter adapter, String[] items){
         adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, items);
@@ -89,12 +90,32 @@ public class SoundSettingsFragment extends Fragment {
 
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-            Toast.makeText(getContext(),"Clicked item",Toast.LENGTH_SHORT);
+            if(adapterView == spinnerFile1){
+                String selectedItem = files1Array[i];
+                soundSettingsViewModel.soundSettings[i] = selectedItem;
+            }
+            else if(adapterView == spinnerFile2){
+                String selectedItem = files2Array[i];
+                soundSettingsViewModel.soundSettings[i] = selectedItem;
+            }
+            else if(adapterView == spinnerPitch){
+                String selectedItem = pitchesArray[i];
+                soundSettingsViewModel.soundSettings[i] = selectedItem;
+            }
+            else if(adapterView == spinnerSpeed){
+                String selectedItem = speedArray[i];
+                soundSettingsViewModel.soundSettings[i] = selectedItem;
+            }
+            else if(adapterView == spinnerBeat){
+                String selectedItem = beatsArray[i];
+                soundSettingsViewModel.soundSettings[i] = selectedItem;
+            }
+            Log.d(TAG, soundSettingsViewModel.soundSettings[i]);
         }
 
         @Override
         public void onNothingSelected(AdapterView<?> adapterView) {
-
+            Log.d(TAG, "nothing selected");
         }
     }
 

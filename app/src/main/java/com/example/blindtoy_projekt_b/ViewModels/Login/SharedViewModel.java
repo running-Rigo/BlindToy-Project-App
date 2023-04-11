@@ -44,6 +44,12 @@ public class SharedViewModel extends AndroidViewModel {
                 else if(repoStatus.equals("loginSuccessful")){
                     logUserIn();
                 }
+                else if(repoStatus.equals("noUserFound")){
+                    chooseFirstFragment();
+                }
+                else if(repoStatus.equals("isCheckingUser")){
+                    chooseLoadingFragment();
+                }
             }
         };
         userRepository.asyncStatusUpdate.observeForever(asyncStatusObserver);
@@ -60,6 +66,16 @@ public class SharedViewModel extends AndroidViewModel {
     public void chooseLogin(){
         Log.d(TAG,"Method chooseLogin aufgerufen");
         setNextFragmentDecision("LoginFragment");
+    }
+
+    private void chooseLoadingFragment(){
+        Log.d(TAG,"repo is checking user - Method chooseLoadingFragment aufgerufen");
+        setNextFragmentDecision("LoadingFragment");
+    }
+
+    private void chooseFirstFragment(){
+        Log.d(TAG,"repo found no user -Method chooseFirstFragment aufgerufen");
+        setNextFragmentDecision("FirstFragment");
     }
 
     public void chooseRegistration(){

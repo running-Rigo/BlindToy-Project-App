@@ -116,6 +116,11 @@ public class PetsRepository {
         Log.d(TAG,"put new pet from server into userpetslist");
     }
 
+    private ArrayList<Pet> getUserPetsList(){
+        ArrayList<Pet> localList = mutableUserPetsList.getValue();
+        return localList;
+    }
+
 //endregion
 
 //region *New Pet (External Sever)
@@ -149,9 +154,65 @@ public class PetsRepository {
     }
 //endregion
 
+// region *Delete one Pet
+
     public void deletePet(){
         Log.d(TAG,"method deletePet called");
-        setAsyncStatusUpdate("petDeletedSuccessful");
+        //Delete from server DB:
+        deletePetFromServerDb();
     }
+
+    private void deletePetFromServerDb(){
+        Call call = serverAPI.deleteOnePet(String.valueOf(oneChosenPet.pet_id),userDetails.getApiToken(), userDetails.getUserId());
+        call.enqueue(new Callback() {
+            @Override
+            public void onResponse(Call call, Response response) {
+                if(!response.isSuccessful()){ //this if is important because the result object would be null if eg. there is error 404
+                    Log.e(TAG,"Could access server but didn't receive result.");
+                    return;
+                }
+                String responseString = response.body().toString();
+                if(responseString.equals("success")){
+                    deletePetLocally();
+                    Log.d(TAG,"Got message 'success' from server");
+                }
+                else{
+                    setRepoErrorMessage(responseString);
+                    Log.e("TAG", responseString);
+                }
+            }
+            @Override
+            public void onFailure(Call call, Throwable t) {
+                setRepoErrorMessage(t.toString());
+                Log.e("TAG", t.toString());
+            }
+        });
+    }
+
+    private void deletePetLocally(){
+        //Delete from local PetsList;
+        ArrayList<Pet> petsList = getUserPetsList();
+        int deleteId = oneChosenPet.pet_id;
+        int deleteIndex = -1;
+        for(int i = 0; i < petsList.size(); i++){
+            if(petsList.get(i).pet_id == deleteId){
+                deleteIndex = i;
+                Log.d(TAG, "DeleteIndex " + deleteIndex);
+                i = petsList.size();
+            }
+        }
+        try{
+            petsList.remove(deleteIndex);
+            oneChosenPet = null;
+            Log.d(TAG,"localdelete successful");
+            setAsyncStatusUpdate("petDeletedSuccessful");
+        }
+        catch (IndexOutOfBoundsException ex){
+            Log.d(TAG,"ChosenPet couldn't be deleted from local list.");
+        }
+        setAsyncStatusUpdate("");
+    }
+
+//endregion
 
 }

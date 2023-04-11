@@ -38,6 +38,24 @@ public class MainActivity extends AppCompatActivity {
                     Intent loginIntent = new Intent(getApplicationContext(), InternalMainActivity.class);
                     startActivity(loginIntent);
                 }
+                else if(nextUI.equals("FirstFragment")){
+                    //render FirstFragment (choose login or registration)
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.fragment_container_view, FirstFragment.class, null)
+                            .setReorderingAllowed(true)
+                            .addToBackStack("name") // name can be null
+                            .commit();
+                }
+                else if(nextUI.equals("LoadingFragment")){
+                    //render FirstFragment (choose login or registration)
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.fragment_container_view, LoadingFragment.class, null)
+                            .setReorderingAllowed(true)
+                            .addToBackStack("name") // name can be null
+                            .commit();
+                }
                 else if(nextUI.equals("LoginFragment")){
                     //render LoginFragment
                     FragmentManager fragmentManager = getSupportFragmentManager();

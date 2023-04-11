@@ -63,7 +63,6 @@ public class InternalSharedViewModel extends AndroidViewModel {
                 if(userRepoStatus.equals("logoutSuccessful")){
                     chooseLogout();
                 }
-
             }
         };
         userRepository.asyncStatusUpdate.observeForever(userAsyncStatusObserver);

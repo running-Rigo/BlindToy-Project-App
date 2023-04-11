@@ -20,31 +20,41 @@
         tools:text="Deine Haustiere" />
 
 
+    <LinearLayout
+        android:id="@+id/petsContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="130dp"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <ListView
             android:id="@+id/petsListView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="44dp"
             android:background="#C1ED8E"
             android:padding="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/petsListHeader"
             app:layout_constraintVertical_bias="0.091"></ListView>
+    </LinearLayout>
+
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addPetButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
-        android:layout_marginBottom="15dp"
+        android:layout_marginBottom="4dp"
         android:clickable="true"
-        app:layout_constraintBottom_toTopOf="@+id/petsListView"
+        app:layout_constraintBottom_toTopOf="@+id/petsContainer"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.308"
+        app:layout_constraintHorizontal_bias="0.337"
         app:layout_constraintStart_toEndOf="@+id/petsListHeader"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@android:drawable/ic_menu_add" />
 
 
