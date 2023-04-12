@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.annotation.IdRes;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.util.Log;
@@ -23,6 +24,8 @@ import com.example.blindtoy_projekt_b.ViewModels.Game.SoundSettingsViewModel;
 import com.example.blindtoy_projekt_b.ViewModels.Internal.PetsListViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.ArrayList;
+
 
 public class SoundSettingsFragment extends Fragment {
 
@@ -39,6 +42,9 @@ public class SoundSettingsFragment extends Fragment {
     private Spinner spinnerFile1,spinnerFile2,spinnerPitch,spinnerSpeed,spinnerBeat;
     private ArrayAdapter<String> adapterFile1,adapterFile2,adapterPitch,adapterSpeed,adapterBeat;
     private FloatingActionButton saveSettings;
+
+    private ArrayList<String> soundSettingsOfPet;
+
     //endregion
 
 
@@ -54,8 +60,36 @@ public class SoundSettingsFragment extends Fragment {
         sharedOnePetViewModel = new ViewModelProvider(requireActivity()).get(SharedOnePetViewModel.class);
         soundSettingsViewModel = new ViewModelProvider(this).get(SoundSettingsViewModel.class);
         initViews();
+        initObserver();
+
         Log.d(TAG,"geöffnet!");
         return view;
+    }
+
+    private void initObserver(){ // the actual settings for the pet are set as selected in the dropdown menu;
+        soundSettingsViewModel.chosenSoundSettings.observe(getViewLifecycleOwner(), new Observer<ArrayList<String>>() {
+            @Override
+            public void onChanged(ArrayList<String> settings) {
+                soundSettingsOfPet = settings;
+                for(int i = 0; i < soundSettingsOfPet.size(); i++){
+                    if(i == 0){
+                        spinnerFile1.setSelection(Integer.parseInt(soundSettingsOfPet.get(i))-1);
+                    }
+                    else if(i == 1){
+                        spinnerFile2.setSelection(Integer.parseInt(soundSettingsOfPet.get(i))-1);
+                    }
+                    else if(i == 2){
+                        spinnerPitch.setSelection(Integer.parseInt(soundSettingsOfPet.get(i))-1);
+                    }
+                    else if(i == 3){
+                        spinnerSpeed.setSelection(Integer.parseInt(soundSettingsOfPet.get(i))-1);
+                    }
+                    else if(i == 4){
+                        spinnerBeat.setSelection(Integer.parseInt(soundSettingsOfPet.get(i))-1);
+                    }
+                }
+            }
+        });
     }
 
     private void initViews() {
@@ -91,26 +125,30 @@ public class SoundSettingsFragment extends Fragment {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
             if(adapterView == spinnerFile1){
-                String selectedItem = files1Array[i];
-                soundSettingsViewModel.soundSettings[i] = selectedItem;
+                String selectedItem = String.valueOf(i+1);
+                soundSettingsViewModel.soundSettings[0] = selectedItem;
+                Log.d(TAG, soundSettingsViewModel.soundSettings[0]);
             }
             else if(adapterView == spinnerFile2){
-                String selectedItem = files2Array[i];
-                soundSettingsViewModel.soundSettings[i] = selectedItem;
+                String selectedItem = String.valueOf(i+1);
+                soundSettingsViewModel.soundSettings[1] = selectedItem;
+                Log.d(TAG, soundSettingsViewModel.soundSettings[1]);
             }
             else if(adapterView == spinnerPitch){
-                String selectedItem = pitchesArray[i];
-                soundSettingsViewModel.soundSettings[i] = selectedItem;
+                String selectedItem = String.valueOf(i+1);
+                soundSettingsViewModel.soundSettings[2] = selectedItem;
+                Log.d(TAG, soundSettingsViewModel.soundSettings[2]);
             }
             else if(adapterView == spinnerSpeed){
-                String selectedItem = speedArray[i];
-                soundSettingsViewModel.soundSettings[i] = selectedItem;
+                String selectedItem = String.valueOf(i+1);
+                soundSettingsViewModel.soundSettings[3] = selectedItem;
+                Log.d(TAG, soundSettingsViewModel.soundSettings[3]);
             }
             else if(adapterView == spinnerBeat){
-                String selectedItem = beatsArray[i];
-                soundSettingsViewModel.soundSettings[i] = selectedItem;
+                String selectedItem = String.valueOf(i+1);
+                soundSettingsViewModel.soundSettings[4] = selectedItem;
+                Log.d(TAG, soundSettingsViewModel.soundSettings[4]);
             }
-            Log.d(TAG, soundSettingsViewModel.soundSettings[i]);
         }
 
         @Override

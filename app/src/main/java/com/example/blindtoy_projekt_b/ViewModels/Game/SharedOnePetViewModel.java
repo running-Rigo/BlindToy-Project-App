@@ -26,9 +26,6 @@ public class SharedOnePetViewModel extends AndroidViewModel {
     private Observer<String> userAsyncStatusObserver;
     private Observer<String> petsAsyncStatusObserver;
 
-
-    private boolean hasSettings = false;
-
     public SharedOnePetViewModel(@NonNull Application application) {
         super(application);
         userRepository = GeneralUserRepository.getInstance(application);
@@ -62,6 +59,9 @@ public class SharedOnePetViewModel extends AndroidViewModel {
                 if(petsRepoStatus.equals("petDeletedSuccessful")){
                     choosePetsList();
                 }
+                else if(petsRepoStatus.equals("settingsSavedSuccessfully")){
+                    chooseOnePetOverview();
+                }
             }
         };
         petsRepository.asyncStatusUpdate.observeForever(petsAsyncStatusObserver);
@@ -82,13 +82,6 @@ public class SharedOnePetViewModel extends AndroidViewModel {
     }
 
 
-    public boolean getHasSettings() {
-        return hasSettings;
-    }
-
-    public void setHasSettings(boolean hasSettings) {
-        this.hasSettings = hasSettings;
-    }
 
     private void choosePetsList(){
         setNextFragmentDecision("InternalMainActivity");

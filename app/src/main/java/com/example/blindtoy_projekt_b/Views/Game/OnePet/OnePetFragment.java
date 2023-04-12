@@ -52,9 +52,6 @@ public class OnePetFragment extends Fragment {
         deletePetButton = view.findViewById(R.id.delete_pet);
         speciesImg = view.findViewById(R.id.speciesImg);
         petNameText = view.findViewById(R.id.petsListHeader);
-        if(!sharedOnePetViewModel.getHasSettings()){
-            playButton.setEnabled(false);
-        }
 
         settingsButton.setOnClickListener(new View.OnClickListener() {
             @Override

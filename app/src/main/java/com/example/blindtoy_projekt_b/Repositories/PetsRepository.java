@@ -215,4 +215,36 @@ public class PetsRepository {
 
 //endregion
 
+//region *Save Sound Settings
+    public void saveNewSoundSettings(String settingsString){
+        Log.d(TAG,"sent new settings to server: "+ settingsString);
+        Call call= serverAPI.saveNewSounds(String.valueOf(oneChosenPet.pet_id),settingsString,userDetails.getApiToken(),userDetails.getUserId());
+        call.enqueue(new Callback() {
+            @Override
+            public void onResponse(Call call, Response response) {
+                if(!response.isSuccessful()){ //this if is important because the result object would be null if eg. there is error 404
+                    Log.e(TAG,"Could access server but didn't receive result.");
+                    return;
+                }
+                String responseString = response.body().toString();
+                if(responseString.equals("success")){
+                    oneChosenPet.sounds = settingsString;
+                    Log.d(TAG,"oneChosenPet.sounds = " +oneChosenPet.sounds);
+                    Log.d(TAG,"Got message 'success' from server");
+                    setAsyncStatusUpdate("settingsSavedSuccessfully");
+                }
+                else{
+                    setRepoErrorMessage(responseString);
+                    Log.e("TAG", responseString);
+                }
+            }
+
+            @Override
+            public void onFailure(Call call, Throwable t) {
+                setRepoErrorMessage(t.toString());
+                Log.e("TAG", t.toString());
+            }
+        });
+    }
+//endregion
 }

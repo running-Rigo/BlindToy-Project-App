@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Views.Login.FirstFragment">
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#C1ED8E"
@@ -16,7 +15,7 @@
             android:id="@+id/welcomeTxt"
             android:layout_width="355dp"
             android:layout_height="45dp"
-            android:text="Herzlich willkommen beim BlindToy Assistenten"
+            android:text="Herzlich willkommen beim BlindToy Assistenten!"
             android:textAlignment="center"
             android:textColor="#673AB7"
             android:textSize="20sp"
@@ -51,13 +50,13 @@
 
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="121dp"
-            android:layout_height="86dp"
+            android:layout_width="199dp"
+            android:layout_height="85dp"
             android:layout_marginBottom="20dp"
             app:layout_constraintBottom_toTopOf="@+id/welcomeTxt"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:srcCompat="@android:drawable/ic_lock_idle_lock" />
+            app:srcCompat="@drawable/blindtoy" />
 
 
 

@@ -1,6 +1,7 @@
 package com.example.blindtoy_projekt_b.ViewModels.Game;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -26,22 +27,30 @@ public class SoundSettingsViewModel extends AndroidViewModel {
         super(application);
         petsRepository = PetsRepository.getInstance(application);
         chosenPetSoundString = petsRepository.getOneChosenPet().sounds; //takes at creation the soundSettings of the chosenPet
+        initChosenSoundSettings();
     }
 
     private void initChosenSoundSettings(){
-        soundSettings = chosenPetSoundString.split(",");
-        ArrayList<String> soundSettingsList = new ArrayList<>();
+        soundSettings = chosenPetSoundString.split(","); //gives an Array;
+        ArrayList<String> soundSettingsList = new ArrayList<>(); //make Arraylist to serve as LiveData for the Fragment;
         for(String sound : soundSettings){
             soundSettingsList.add(sound);
+            Log.d(TAG,"Setting: " + sound);
         }
+
         mutableChosenSoundSettings.setValue(soundSettingsList);
         chosenSoundSettings = mutableChosenSoundSettings;
     }
 
     public void saveSettings (){
-
-
-
+        String soundSettingsString = "";
+        for(int i = 0; i<soundSettings.length; i++){
+            soundSettingsString += soundSettings[i]; // would be better with a stringbuilder
+            if(i < 4){
+                soundSettingsString += ",";
+            }
+        }
+        petsRepository.saveNewSoundSettings(soundSettingsString);
     }
 
 

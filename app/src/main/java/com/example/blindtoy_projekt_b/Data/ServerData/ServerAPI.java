@@ -46,4 +46,13 @@ public interface ServerAPI {
             @Field("token") String token,
             @Field("user_id") String userId
     );
+
+    @FormUrlEncoded
+    @POST("changePet.php")
+    Call<String> saveNewSounds(
+            @Field("pet_id") String petId,
+            @Field("sounds") String sounds,
+            @Field("token") String token,
+            @Field("user_id") String userId
+    );
     }
