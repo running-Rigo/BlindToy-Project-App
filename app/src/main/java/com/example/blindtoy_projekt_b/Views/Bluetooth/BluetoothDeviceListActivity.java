@@ -26,6 +26,7 @@ import android.widget.TextView;
 
 import com.example.blindtoy_projekt_b.R;
 import com.example.blindtoy_projekt_b.ViewModels.Play.SharedPlayViewModel;
+import com.example.blindtoy_projekt_b.Views.Game.OnePet.OnePetActivity;
 import com.example.blindtoy_projekt_b.Views.Play.PlayWithPetActivity;
 
 import java.util.ArrayList;
@@ -41,6 +42,9 @@ public class BluetoothDeviceListActivity extends AppCompatActivity {
     private Button scanButton;
     private AdapterView.OnItemClickListener deviceClickListener;
     private ArrayList<BluetoothDevice> availableDevicesList = new ArrayList<>();
+    private ArrayList<BluetoothDevice> pairedDevices = new ArrayList<>();
+    private ListView pairedListView;
+    private ListView newDevicesListView;
 
 
     @Override
@@ -71,6 +75,7 @@ public class BluetoothDeviceListActivity extends AppCompatActivity {
 
         // Unregister broadcast listeners
         this.unregisterReceiver(foundDeviceBroadCastReceiver);
+        this.unregisterReceiver(deviceConnectedBroadCastReceiver);
     }
 
     private void checkPermissions() {
@@ -97,35 +102,44 @@ public class BluetoothDeviceListActivity extends AppCompatActivity {
         pairedDevicesArrayAdapter = new ArrayAdapter<>(this, R.layout.device_name);
         newDevicesArrayAdapter = new ArrayAdapter<String>(this, R.layout.device_name);
 
-        // Find and set up the ListView for paired devices
-        ListView pairedListView = (ListView) findViewById(R.id.paired_devices);
-        pairedListView.setAdapter(pairedDevicesArrayAdapter);
-        pairedListView.setOnItemClickListener(deviceClickListener);
-
-        // Find and set up the ListView for newly discovered devices
-        ListView newDevicesListView = (ListView) findViewById(R.id.new_devices);
-        newDevicesListView.setAdapter(newDevicesArrayAdapter);
-        newDevicesListView.setOnItemClickListener(deviceClickListener);
-
         //Device-List itemClickListener:
         deviceClickListener = new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 int index = i;
                 Log.d(TAG,"clicked index: " + index);
-                connectToDevice(index);
+                //if click comes from pairedDevicesList:
+                if (adapterView == pairedListView)
+                {
+                    connectToDevice(index, false);
+                }
+                //if click comes from newDevicesList:
+                else if (view == newDevicesListView){
+                    connectToDevice(index,true);
+                }
             }
         };
+
+        // Find and set up the ListView for paired devices
+        pairedListView = (ListView) findViewById(R.id.paired_devices);
+        pairedListView.setAdapter(pairedDevicesArrayAdapter);
+        pairedListView.setOnItemClickListener(deviceClickListener);
+
+        // Find and set up the ListView for newly discovered devices
+        newDevicesListView = (ListView) findViewById(R.id.new_devices);
+        newDevicesListView.setAdapter(newDevicesArrayAdapter);
+        newDevicesListView.setOnItemClickListener(deviceClickListener);
     }
+
 
     private void setBroadCastFilters() {
         // Register for broadcasts when a device is discovered
-        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-        this.registerReceiver(foundDeviceBroadCastReceiver, filter);
+        IntentFilter foundDeviceFilter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        this.registerReceiver(foundDeviceBroadCastReceiver, foundDeviceFilter);
 
         // Register for broadcasts when discovery has finished
-        filter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-        this.registerReceiver(foundDeviceBroadCastReceiver, filter);
+        IntentFilter discoveryFinishedFilter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+        this.registerReceiver(foundDeviceBroadCastReceiver, discoveryFinishedFilter);
 
         //Register for broadcasts when a device was bonded successfully
         IntentFilter deviceConnectedFilter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
@@ -138,7 +152,8 @@ public class BluetoothDeviceListActivity extends AppCompatActivity {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
+        Set<BluetoothDevice> pairedDevicesSet = bluetoothAdapter.getBondedDevices();
+        pairedDevices = new ArrayList<>(pairedDevicesSet);
 
         // If there are paired devices, add each one to the ArrayAdapter
         if (pairedDevices.size() > 0) {
@@ -153,17 +168,29 @@ public class BluetoothDeviceListActivity extends AppCompatActivity {
     }
 
 
-    private void connectToDevice(int index) { //called via onItemClickListener in Devices-List
+    private void connectToDevice(int index, boolean isNew) { //called via onItemClickListener in Devices-List
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
         Log.d(TAG,"connect to device was called by click");
         bluetoothAdapter.cancelDiscovery();
-        BluetoothDevice chosenDevice = availableDevicesList.get(index);
+        BluetoothDevice chosenDevice;
+        if(isNew){
+            chosenDevice = availableDevicesList.get(index);
+        }
+        else{
+             chosenDevice = pairedDevices.get(index);
+        }
         String address = chosenDevice.getAddress();
         try {
             chosenDevice.createBond();
             Log.d(TAG, "successfully bonded with device");
+            //important: if device is already bonded, there won't be a broadcast for action_state_changed, so the intent has to be triggered directly:
+            if (chosenDevice.getBondState() == BluetoothDevice.BOND_BONDED) {
+                Log.d(TAG,"Bond-state: Device already bonded!");
+                Intent backToPlayIntent = new Intent(getApplicationContext(), PlayWithPetActivity.class);
+                startActivity(backToPlayIntent);
+            }
         } catch (Exception ex) {
             Log.d(TAG, ex.toString());
         }
@@ -246,21 +273,18 @@ public class BluetoothDeviceListActivity extends AppCompatActivity {
             final String action = intent.getAction();
             if (action.equals(BluetoothDevice.ACTION_BOND_STATE_CHANGED)) {
                 BluetoothDevice myDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                //Check permissions...
                 if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
                     return;
                 }
                 Log.d(TAG, "Bonding-State changed for device:" + myDevice.getName());
-                //Check permissions...
-                if (ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-                    //doing nothing;
-                    return;
-                }
 
                 //3 cases:
                 //case 1: bonded already
                 if (myDevice.getBondState() == BluetoothDevice.BOND_BONDED) {
                     Log.d(TAG,"Bond-state: A device is bonded.");
-
+                    Intent backToPlayIntent = new Intent(getApplicationContext(), PlayWithPetActivity.class);
+                    startActivity(backToPlayIntent);
                 }
                 //case 2: just creating a bond
                 else if(myDevice.getBondState() == BluetoothDevice.BOND_BONDING){

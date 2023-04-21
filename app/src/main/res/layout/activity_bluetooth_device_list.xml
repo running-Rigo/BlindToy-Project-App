@@ -22,12 +22,10 @@
         android:id="@+id/paired_devices_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginTop="40dp"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/scan_button"
-        app:layout_constraintTop_toBottomOf="@+id/bluetooth_devices_header">
+        app:layout_constraintTop_toBottomOf="@+id/bluetooth_devices_header"
+        tools:layout_editor_absoluteX="8dp">
 
         <TextView
             android:id="@+id/title_paired_devices"
