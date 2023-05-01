@@ -16,6 +16,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
+import com.example.blindtoy_projekt_b.Bluetooth.BtConnectionService;
 import com.example.blindtoy_projekt_b.Entities.Pet;
 import com.example.blindtoy_projekt_b.Repositories.PetsRepository;
 
@@ -31,16 +32,21 @@ public class SharedPlayViewModel extends AndroidViewModel {
     public LiveData<Boolean> playIsActive;
     private MutableLiveData<Boolean> mutablePlayIsActive = new MutableLiveData<>();
 
+    private BtConnectionService btConnectionService;
+
+    public LiveData<String> blindSightStatus;
 
 
     public SharedPlayViewModel(@NonNull Application application) {
         super(application);
         this.context = application;
+        btConnectionService = new BtConnectionService(context);
+        blindSightStatus = btConnectionService.connectionStatus;
+        btConnectionService.checkForBlindSight();
         petsRepository = PetsRepository.getInstance(application);
         setChosenPet(petsRepository.getOneChosenPet()); //takes at creation only once the chosenPet from userrepo
         setNextFragmentDecision("");
         setPlayIsActive(false);
-
     }
 
     private void setNextFragmentDecision(String nextUIChoice) {
@@ -49,6 +55,9 @@ public class SharedPlayViewModel extends AndroidViewModel {
         Log.d(TAG,"Method setNextFragmentDecision aufgerufen: " + nextFragmentDecision.getValue().toString());
     }
 
+    public void connectToBlindSight() {
+        btConnectionService.connectToBlindSight();
+    }
 
 
     private void setChosenPet(Pet repoPet){

@@ -19,12 +19,15 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.blindtoy_projekt_b.Bluetooth.BtConnectionService;
 import com.example.blindtoy_projekt_b.R;
@@ -36,6 +39,8 @@ import com.example.blindtoy_projekt_b.Views.Bluetooth.BluetoothDeviceListActivit
 public class BluetoothStateFragment extends Fragment {
     private static final String TAG = "L_BluetoothStateFragment";
     private Button btActivityButton;
+    private Button connectButton;
+    private TextView blindSightStatusText;
     private View view;
     private SharedPlayViewModel sharedPlayViewModel;
     private BluetoothViewModel bluetoothViewModel;
@@ -55,9 +60,10 @@ public class BluetoothStateFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_bluetooth_state, container, false);
-        //sharedPlayViewModel = new ViewModelProvider(requireActivity()).get(SharedPlayViewModel.class);
+        sharedPlayViewModel = new ViewModelProvider(requireActivity()).get(SharedPlayViewModel.class);
         //bluetoothViewModel = new ViewModelProvider(this).get(BluetoothViewModel.class);
         initViews();
+        initObserver();
         initBluetooth();
         Log.d(TAG, "geöffnet!");
         return view;
@@ -72,6 +78,40 @@ public class BluetoothStateFragment extends Fragment {
                 startBluetoothDeviceListActivity();
             }
         });
+        blindSightStatusText = view.findViewById(R.id.blindSightStatus);
+
+        connectButton = view.findViewById(R.id.connectBtn);
+        connectButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sharedPlayViewModel.connectToBlindSight();
+            }
+        });
+    }
+
+    private void initObserver(){
+        Observer<String> blindSightStatusObserver = new Observer<String>() {
+            @Override
+            public void onChanged(String blindSightStatus) {
+                if(blindSightStatus.equals("paired")){
+                    blindSightStatusText.setText("BlindSight: paired");
+                    connectButton.setVisibility(View.VISIBLE);
+                }
+                else if(blindSightStatus.equals("not known")){
+                    blindSightStatusText.setText("Find Device:");
+                    btActivityButton.setVisibility(View.VISIBLE);
+
+                }
+                else if(blindSightStatus.equals("connected")){
+                    blindSightStatusText.setText("BlindSight: READY!");
+                }
+                else if(blindSightStatus.equals("failed")){
+                    blindSightStatusText.setText("Connection Failed!");
+                }
+            }
+        };
+        sharedPlayViewModel.blindSightStatus.observe(getViewLifecycleOwner(),blindSightStatusObserver);
+
     }
 
 

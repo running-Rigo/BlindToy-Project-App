@@ -47,7 +47,6 @@ public class PlayWithPetActivity extends AppCompatActivity {
     private Button stopBtn;
     private SharedPlayViewModel sharedPlayViewModel;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

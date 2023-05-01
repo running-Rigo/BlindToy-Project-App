@@ -6,17 +6,23 @@ import static androidx.core.content.ContextCompat.getSystemService;
 import android.Manifest;
 import android.app.Application;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
+import android.bluetooth.BluetoothSocket;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.util.Log;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+
+import java.io.IOException;
 
 public class BluetoothViewModel extends AndroidViewModel {
     private static final String TAG = "L_BluetoothStateViewModel";
@@ -32,5 +38,4 @@ public class BluetoothViewModel extends AndroidViewModel {
         mutableBtIsEnabled.setValue(isEnabled);
         btIsEnabled = mutableBtIsEnabled;
     }
-
 }
