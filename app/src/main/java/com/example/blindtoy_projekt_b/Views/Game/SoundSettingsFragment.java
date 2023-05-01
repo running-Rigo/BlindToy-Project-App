@@ -38,7 +38,7 @@ public class SoundSettingsFragment extends Fragment {
     private String[] files2Array = {"Da komm her", "Such such", "Miau","*schnalz-Geräusch*"};
     private String[] pitchesArray = {"tiefe Tonlage", "mittlere Tonlage", "hoche Tonlage"};
     private String[] speedArray = {"langsam", "mittel", "schnell"};
-    private String[] beatsArray = {"beep", "beep-beep", "beep-beeeeep","beeeep"};
+    private String[] beatsArray = {"beep", "beep-beep", "beep-beeeeep","beeeep-beeeep"};
     private Spinner spinnerFile1,spinnerFile2,spinnerPitch,spinnerSpeed,spinnerBeat;
     private ArrayAdapter<String> adapterFile1,adapterFile2,adapterPitch,adapterSpeed,adapterBeat;
     private FloatingActionButton saveSettings;

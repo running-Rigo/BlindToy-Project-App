@@ -12,7 +12,7 @@ public class Pet {
         this.pet_id = pet_id;
         this.name = name;
         this.species = species;
-        sounds = "1,2,2,2,1"; //soundSettings are for a new pet set to default values (file1,file2,mediumBeepingSpeed,mediumTonePitch,single*beep*)
+        sounds = "1,2,2,2,1"; //soundSettings are for a new pet set to default values (file1,file2,mediumTonePitch,mediumBeepingSpeed,single*beep*)
     }
 
     @Override

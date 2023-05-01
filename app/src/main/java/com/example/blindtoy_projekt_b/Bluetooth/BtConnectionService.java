@@ -1,16 +1,10 @@
 package com.example.blindtoy_projekt_b.Bluetooth;
 
 import android.Manifest;
-import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
-import android.content.AsyncQueryHandler;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.pm.LabeledIntent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -18,18 +12,18 @@ import android.util.Log;
 import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.charset.Charset;
 import java.util.UUID;
 
 public class BtConnectionService {
     private static final String TAG = "L_BtConnectionService";
     private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     private final BluetoothAdapter myBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+    private BluetoothSocket btSocket = null;
+    private OutputStream outputStream = null;
+
 
     private Context context;
 
@@ -50,7 +44,7 @@ public class BtConnectionService {
     }
 
 
-    public void checkForBlindSight() {
+    public void checkForBlindDog() {
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
@@ -66,7 +60,6 @@ public class BtConnectionService {
     }
 
     public void connectToBlindSight() {
-        BluetoothSocket btSocket = null;
         int counter = 0;
         do {
             try {
@@ -95,7 +88,7 @@ public class BtConnectionService {
         }while (!btSocket.isConnected() && counter < 3);
 
         try {
-            OutputStream outputStream = btSocket.getOutputStream();
+            outputStream = btSocket.getOutputStream();
             outputStream.write((byte)'0');
         } catch (IOException e) {
             e.printStackTrace();
@@ -103,6 +96,14 @@ public class BtConnectionService {
 
         //ConnectThread connectThreadAsync = new ConnectThread(hc05, MY_UUID);
         //connectThreadAsync.doInBackground();
+    }
+
+    public void sendChar(char character){
+        try {
+            outputStream.write((byte)character);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     //this thread tries to connect to another devices  server-socket (not in the Main-Thread!)

@@ -1,20 +1,13 @@
 package com.example.blindtoy_projekt_b.ViewModels.Play;
 
-import static androidx.core.app.ActivityCompat.startActivityForResult;
-import static androidx.core.content.ContextCompat.getSystemService;
-
 import android.app.Application;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothManager;
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 
 import com.example.blindtoy_projekt_b.Bluetooth.BtConnectionService;
 import com.example.blindtoy_projekt_b.Entities.Pet;
@@ -36,15 +29,20 @@ public class SharedPlayViewModel extends AndroidViewModel {
 
     public LiveData<String> blindSightStatus;
 
+    private String soundSettingsString;
+    private String[] soundsArray;
+
 
     public SharedPlayViewModel(@NonNull Application application) {
         super(application);
         this.context = application;
         btConnectionService = new BtConnectionService(context);
         blindSightStatus = btConnectionService.connectionStatus;
-        btConnectionService.checkForBlindSight();
+        btConnectionService.checkForBlindDog();
         petsRepository = PetsRepository.getInstance(application);
         setChosenPet(petsRepository.getOneChosenPet()); //takes at creation only once the chosenPet from userrepo
+        soundSettingsString = petsRepository.getOneChosenPet().sounds;
+        soundsArray = soundSettingsString.split(",");
         setNextFragmentDecision("");
         setPlayIsActive(false);
     }
@@ -64,6 +62,60 @@ public class SharedPlayViewModel extends AndroidViewModel {
         mutableChosenPet.setValue(repoPet);
         chosenPet = mutableChosenPet;
     }
+
+    public void activateBeeping(){
+        char pitch = 'b'; //default medium pitch
+        if(soundsArray[2].equals("1")){ //deep sound
+            pitch = 'a';
+        }
+        else if(soundsArray[2].equals("3")){ //high sound
+            pitch = 'c';
+        }
+
+
+        char speed = 'e'; //default medium speed
+        if(soundsArray[3].equals("1")){ //slow
+            speed = 'd';
+        }
+        else if(soundsArray[3].equals("3")){ //fast
+            speed = 'f';
+        }
+
+
+        char beat = '1'; //default single beep
+        if(soundsArray[4].equals("2")){
+            beat = '2';
+        }
+        else if(soundsArray[4].equals("3")){
+            beat = '3';
+        }
+        else if(soundsArray[4].equals("4")){
+            beat = '4';
+        }
+
+        btConnectionService.sendChar(pitch);
+        btConnectionService.sendChar(speed);
+        btConnectionService.sendChar(beat);
+    }
+
+    //for instance sounds = "1,2,2,2,1"; soundSettings are for a new pet set to default values (file1,file2,mediumTonePitch,mediumBeepingSpeed,single*beep*)
+
+    public void deactivateBeeping(){
+        //x
+        for(int i = 0; i < 10; i++){
+            btConnectionService.sendChar('x');
+        }
+    }
+
+    public void playFirstMP3(){
+        //how to handle this?
+    }
+
+    public void playSecondMP3(){
+        //how to handle this?
+    }
+
+
 
 
     public void setPlayIsActive(boolean isActive){
