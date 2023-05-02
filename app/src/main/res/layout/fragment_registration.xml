@@ -46,6 +46,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/newuseremail" />
 
+
+    <Button
+        android:id="@+id/registernow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="40dp"
+        android:text="Button"
+        app:layout_constraintBottom_toTopOf="@+id/registrationProgressBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
     <ProgressBar
         android:id="@+id/registrationProgressBar"
         style="?android:attr/progressBarStyleLarge"
@@ -59,15 +71,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.816" />
 
-    <Button
-        android:id="@+id/registernow"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="40dp"
-        android:text="Button"
-        app:layout_constraintBottom_toTopOf="@+id/registrationProgressBar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
