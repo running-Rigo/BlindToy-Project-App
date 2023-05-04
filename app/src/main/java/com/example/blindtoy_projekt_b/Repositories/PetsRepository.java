@@ -232,6 +232,7 @@ public class PetsRepository {
                     Log.d(TAG,"oneChosenPet.sounds = " +oneChosenPet.sounds);
                     Log.d(TAG,"Got message 'success' from server");
                     setAsyncStatusUpdate("settingsSavedSuccessfully");
+                    setAsyncStatusUpdate("");
                 }
                 else{
                     setRepoErrorMessage(responseString);

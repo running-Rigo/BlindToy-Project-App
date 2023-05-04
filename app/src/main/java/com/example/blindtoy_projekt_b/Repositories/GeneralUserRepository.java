@@ -101,6 +101,7 @@ public class GeneralUserRepository {
                 }
                 else{
                     setRepoErrorMessage(registrationResponse);
+                    setRepoErrorMessage("");
                 }
             }
             @Override
