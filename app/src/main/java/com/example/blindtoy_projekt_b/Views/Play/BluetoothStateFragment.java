@@ -4,20 +4,16 @@ import static androidx.core.content.ContextCompat.registerReceiver;
 
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -31,7 +27,6 @@ import android.widget.TextView;
 
 import com.example.blindtoy_projekt_b.Bluetooth.BtConnectionService;
 import com.example.blindtoy_projekt_b.R;
-import com.example.blindtoy_projekt_b.ViewModels.Play.BluetoothViewModel;
 import com.example.blindtoy_projekt_b.ViewModels.Play.SharedPlayViewModel;
 import com.example.blindtoy_projekt_b.Views.Bluetooth.BluetoothDeviceListActivity;
 
@@ -43,13 +38,7 @@ public class BluetoothStateFragment extends Fragment {
     private TextView blindSightStatusText;
     private View view;
     private SharedPlayViewModel sharedPlayViewModel;
-    private BluetoothViewModel bluetoothViewModel;
-    public BluetoothManager bluetoothManager;
     private BluetoothAdapter bluetoothAdapter;
-
-    private String connectedDeviceName = null;
-
-    private BtConnectionService btConnectionService;
 
     public BluetoothStateFragment() {
         // Required empty public constructor
@@ -69,6 +58,13 @@ public class BluetoothStateFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        // Don't forget to unregister the ACTION_FOUND receiver.
+        getContext().unregisterReceiver(btEnableBroadCastReceiver);
+    }
+
 
     private void initViews() {
         btActivityButton = view.findViewById(R.id.bt_choices_button);
@@ -85,6 +81,7 @@ public class BluetoothStateFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 sharedPlayViewModel.connectToBlindSight();
+
             }
         });
     }
@@ -96,17 +93,37 @@ public class BluetoothStateFragment extends Fragment {
                 if(blindSightStatus.equals("paired")){
                     blindSightStatusText.setText("BlindSight: paired");
                     connectButton.setVisibility(View.VISIBLE);
+                    connectButton.setEnabled(true);
+                    connectButton.setText("CONNECT");
+                    btActivityButton.setVisibility(View.GONE);
+
                 }
                 else if(blindSightStatus.equals("not known")){
                     blindSightStatusText.setText("Find Device:");
                     btActivityButton.setVisibility(View.VISIBLE);
-
+                    connectButton.setVisibility(View.GONE);
                 }
                 else if(blindSightStatus.equals("connected")){
                     blindSightStatusText.setText("BlindSight: READY!");
+                    connectButton.setVisibility(View.VISIBLE);
+                    connectButton.setEnabled(false);
+                    connectButton.setText("CONNECT");
+                    btActivityButton.setVisibility(View.GONE);
                 }
                 else if(blindSightStatus.equals("failed")){
                     blindSightStatusText.setText("Connection Failed!");
+                    connectButton.setVisibility(View.VISIBLE);
+                    connectButton.setEnabled(true);
+                    connectButton.setText("CONNECT");
+                    btActivityButton.setVisibility(View.GONE);
+                }
+
+                else if(blindSightStatus.equals("connecting")){
+                    connectButton.setVisibility(View.VISIBLE);
+                    blindSightStatusText.setText("...connecting....");
+                    connectButton.setEnabled(false);
+                    connectButton.setText("...wait");
+                    btActivityButton.setVisibility(View.GONE);
                 }
             }
         };
@@ -169,7 +186,7 @@ public class BluetoothStateFragment extends Fragment {
 
 //endregion
 
-//region *start DeviceListActivity (including broadcastreceiver vor connection
+//region *start DeviceListActivity
     private void startBluetoothDeviceListActivity(){
         Intent searchDevicesIntent = new Intent(getActivity(), BluetoothDeviceListActivity.class);
         startActivity(searchDevicesIntent);

@@ -1,7 +1,9 @@
 package com.example.blindtoy_projekt_b.ViewModels.Game;
 
 import android.app.Application;
+import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -22,12 +24,14 @@ public class SharedOnePetViewModel extends AndroidViewModel {
     public LiveData<String> nextFragmentDecision;
     private MutableLiveData<String> nextUI = new MutableLiveData<>();
     public LiveData<String> repoErrorMessage;
+    private Context context;
     //
     private Observer<String> userAsyncStatusObserver;
     private Observer<String> petsAsyncStatusObserver;
 
     public SharedOnePetViewModel(@NonNull Application application) {
         super(application);
+        this.context = application.getApplicationContext();
         userRepository = GeneralUserRepository.getInstance(application);
         petsRepository = PetsRepository.getInstance(application);
         setChosenPet(petsRepository.getOneChosenPet()); //takes at creation only once the chosenPet from userrepo
@@ -57,9 +61,11 @@ public class SharedOnePetViewModel extends AndroidViewModel {
             @Override
             public void onChanged(String petsRepoStatus) {
                 if(petsRepoStatus.equals("petDeletedSuccessful")){
+                    Toast.makeText(context,"Tier gelöscht!", Toast.LENGTH_SHORT).show();
                     choosePetsList();
                 }
                 else if(petsRepoStatus.equals("settingsSavedSuccessfully")){
+                    Toast.makeText(context,"Änderungen erfolgreich", Toast.LENGTH_SHORT).show();
                     chooseOnePetOverview();
                 }
             }

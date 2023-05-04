@@ -43,10 +43,8 @@ import java.util.regex.Pattern;
 
 public class PlayWithPetActivity extends AppCompatActivity {
     private static final String TAG = "L_PlayWithPetActivity";
-    private final int REQUEST_ENABLE_BT = 0;
     private Button stopBtn;
     private SharedPlayViewModel sharedPlayViewModel;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,37 +52,8 @@ public class PlayWithPetActivity extends AppCompatActivity {
         sharedPlayViewModel = new ViewModelProvider(this).get(SharedPlayViewModel.class);
         initViews();
         initObservers();
-        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-        registerReceiver(receiver, filter);
-    }
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        // Don't forget to unregister the ACTION_FOUND receiver.
-        unregisterReceiver(receiver);
     }
 
-    private final BroadcastReceiver receiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (BluetoothDevice.ACTION_FOUND.equals(action)) { //Discovery has found a device
-                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
-                    return;
-                }
-                String deviceName = device.getName();
-                String deviceHardwareAddress = device.getAddress(); //MAC-Address
-            }
-        }
-    };
 
     private void initViews() {
         stopBtn = findViewById(R.id.stop_btn);
@@ -104,24 +73,6 @@ public class PlayWithPetActivity extends AppCompatActivity {
                     //stop playing and go to OnePetActivity
                     Intent stopIntent = new Intent(getApplicationContext(), OnePetActivity.class);
                     startActivity(stopIntent);
-                }
-                /*else if (nextUI.equals("BluetoothActivity")) {
-                    //stop playing and go to OnePetActivity
-                    Intent btIntent = new Intent(getApplicationContext(), BluetoothActivity.class);
-                    startActivity(btIntent);
-                }
-                 */
-            }
-        });
-
-        sharedPlayViewModel.playIsActive.observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean isActive) {
-                if(!isActive){
-                    Log.d(TAG,"playFragment should not be clickable!");
-                }
-                else{
-                    Log.d(TAG,"playFragment should be active");
                 }
             }
         });

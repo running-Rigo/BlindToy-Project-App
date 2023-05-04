@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.util.Log;
@@ -45,7 +46,7 @@ public class PlayingFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_playing, container, false);
         sharedPlayViewModel = new ViewModelProvider(requireActivity()).get(SharedPlayViewModel.class);
         initViews();
-
+        initObserver();
         Log.d(TAG,"geöffnet!");
         return view;
     }
@@ -81,5 +82,19 @@ public class PlayingFragment extends Fragment {
             }
         });
     }
-}
 
+    private void initObserver(){
+        Observer<String> blindSightStatusObserver = new Observer<String>() {
+            @Override
+            public void onChanged(String blindSightStatus) {
+                if(blindSightStatus.equals("connected")){
+                    beepingButton.setEnabled(true);
+                }
+                else{
+                    beepingButton.setEnabled(false);
+                }
+            }
+        };
+        sharedPlayViewModel.blindSightStatus.observe(getViewLifecycleOwner(),blindSightStatusObserver);
+    }
+}

@@ -2,28 +2,20 @@ package com.example.blindtoy_projekt_b.Views.Game;
 
 import android.app.Activity;
 import android.os.Bundle;
-
-import androidx.annotation.IdRes;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Spinner;
-import android.widget.Toast;
-
 import com.example.blindtoy_projekt_b.R;
 import com.example.blindtoy_projekt_b.ViewModels.Game.SharedOnePetViewModel;
 import com.example.blindtoy_projekt_b.ViewModels.Game.SoundSettingsViewModel;
-import com.example.blindtoy_projekt_b.ViewModels.Internal.PetsListViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 import java.util.ArrayList;
 
 

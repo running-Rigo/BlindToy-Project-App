@@ -11,37 +11,39 @@
         android:id="@+id/bt_state_fragment_container_view"
         android:name="com.example.blindtoy_projekt_b.Views.Play.BluetoothStateFragment"
         android:layout_width="match_parent"
-        android:layout_height="50sp"
+        android:layout_height="100sp"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.042"
+        app:layout_constraintVertical_bias="0.0"
         tools:layout="@layout/fragment_bluetooth_state"
         tools:layout_editor_absoluteX="0dp" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/play_fragment_container_view"
-        android:clickable="false"
         android:name="com.example.blindtoy_projekt_b.Views.Play.PlayingFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="100dp"
         android:layout_marginBottom="100dp"
+        android:clickable="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
         tools:layout="@layout/fragment_playing"
-        tools:layout_editor_absoluteX="0dp"
-        />
+        tools:layout_editor_absoluteX="0dp" />
 
     <Button
         android:id="@+id/stop_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/stop"
         android:text="Stop playing"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/play_fragment_container_view"
-        app:layout_constraintVertical_bias="0.692" />
+        app:layout_constraintVertical_bias="0.519" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

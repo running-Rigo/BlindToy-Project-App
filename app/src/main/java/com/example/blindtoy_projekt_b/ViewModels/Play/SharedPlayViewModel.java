@@ -22,9 +22,6 @@ public class SharedPlayViewModel extends AndroidViewModel {
     private MutableLiveData<Pet> mutableChosenPet = new MutableLiveData<>();
     private MutableLiveData<String> nextUI = new MutableLiveData<>();
 
-    public LiveData<Boolean> playIsActive;
-    private MutableLiveData<Boolean> mutablePlayIsActive = new MutableLiveData<>();
-
     private BtConnectionService btConnectionService;
 
     public LiveData<String> blindSightStatus;
@@ -44,7 +41,6 @@ public class SharedPlayViewModel extends AndroidViewModel {
         soundSettingsString = petsRepository.getOneChosenPet().sounds;
         soundsArray = soundSettingsString.split(",");
         setNextFragmentDecision("");
-        setPlayIsActive(false);
     }
 
     private void setNextFragmentDecision(String nextUIChoice) {
@@ -54,6 +50,7 @@ public class SharedPlayViewModel extends AndroidViewModel {
     }
 
     public void connectToBlindSight() {
+        btConnectionService.setStatusConnecting();
         btConnectionService.connectToBlindSight();
     }
 
@@ -115,13 +112,6 @@ public class SharedPlayViewModel extends AndroidViewModel {
         //how to handle this?
     }
 
-
-
-
-    public void setPlayIsActive(boolean isActive){
-        mutablePlayIsActive.setValue(isActive);
-        playIsActive = mutablePlayIsActive;
-    }
 
     public void stopPlaying(){
         setNextFragmentDecision("OnePetActivity");

@@ -13,9 +13,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import com.example.blindtoy_projekt_b.Entities.Pet;
+
+
 import com.example.blindtoy_projekt_b.R;
 import com.example.blindtoy_projekt_b.ViewModels.Internal.InternalSharedViewModel;
 import com.example.blindtoy_projekt_b.ViewModels.Internal.PetsListViewModel;
@@ -63,7 +63,7 @@ public class PetsListFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) { // i is position of item in list
-                Toast.makeText(getContext(),"Pet clicked: " + adapter.getItem(i), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(),"Pet clicked: " + adapter.getItem(i), Toast.LENGTH_SHORT).show();
                 internalSharedViewModel.setChosenPet(i);
                 internalSharedViewModel.chooseOnePet();
             }

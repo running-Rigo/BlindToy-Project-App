@@ -9,7 +9,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#C1ED8E">
+    android:background="@color/light_blue_shade">
 
     <TextView
         android:id="@+id/buttonsHeader"
@@ -227,7 +227,7 @@
         android:layout_marginTop="8dp"
         android:clickable="true"
         android:src="@android:drawable/ic_menu_save"
-        app:backgroundTint="#FF9800"
+        app:backgroundTint="@color/save"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"

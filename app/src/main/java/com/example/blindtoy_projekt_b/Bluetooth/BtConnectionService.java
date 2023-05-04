@@ -59,6 +59,10 @@ public class BtConnectionService {
         }
     }
 
+    public void setStatusConnecting(){
+        setConnectionStatus("connecting");
+    }
+
     public void connectToBlindSight() {
         int counter = 0;
         do {
