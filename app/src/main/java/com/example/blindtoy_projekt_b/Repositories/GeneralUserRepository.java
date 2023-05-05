@@ -8,12 +8,12 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.blindtoy_projekt_b.Entities.Pet;
+import com.example.blindtoy_projekt_b.Repositories.Entities.Pet;
 import com.example.blindtoy_projekt_b.Data.LocalRoomsData.User;
 import com.example.blindtoy_projekt_b.Data.LocalRoomsData.UserDatabase;
 import com.example.blindtoy_projekt_b.Data.ServerData.ServerAPI;
-import com.example.blindtoy_projekt_b.Entities.Credentials;
-import com.example.blindtoy_projekt_b.Entities.ServerDbUser;
+import com.example.blindtoy_projekt_b.Repositories.Entities.Credentials;
+import com.example.blindtoy_projekt_b.Repositories.Entities.ServerDbUser;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -14,7 +14,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.blindtoy_projekt_b.Entities.Pet;
+import com.example.blindtoy_projekt_b.Repositories.Entities.Pet;
 import com.example.blindtoy_projekt_b.R;
 import com.example.blindtoy_projekt_b.ViewModels.Game.SharedOnePetViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;

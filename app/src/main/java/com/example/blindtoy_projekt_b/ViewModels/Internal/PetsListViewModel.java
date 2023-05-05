@@ -7,7 +7,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.Observer;
 
-import com.example.blindtoy_projekt_b.Entities.Pet;
+import com.example.blindtoy_projekt_b.Repositories.Entities.Pet;
 import com.example.blindtoy_projekt_b.Repositories.PetsRepository;
 
 import java.util.ArrayList;

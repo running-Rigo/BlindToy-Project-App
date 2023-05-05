@@ -1,4 +1,4 @@
-package com.example.blindtoy_projekt_b.Entities;
+package com.example.blindtoy_projekt_b.Repositories.Entities;
 
 import java.util.ArrayList;
 import java.util.List;

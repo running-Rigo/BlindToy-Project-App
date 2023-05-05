@@ -1,12 +1,8 @@
 package com.example.blindtoy_projekt_b.Data.ServerData;
-
-import com.example.blindtoy_projekt_b.Entities.ServerDbPet;
-import com.example.blindtoy_projekt_b.Entities.ServerDbUser;
+import com.example.blindtoy_projekt_b.Repositories.Entities.ServerDbUser;
 import retrofit2.Call;
-import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
-import retrofit2.http.Header;
 import retrofit2.http.POST;
 
 public interface ServerAPI {

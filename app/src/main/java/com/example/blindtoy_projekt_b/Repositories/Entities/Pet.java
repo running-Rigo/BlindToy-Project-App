@@ -1,4 +1,4 @@
-package com.example.blindtoy_projekt_b.Entities;
+package com.example.blindtoy_projekt_b.Repositories.Entities;
 
 public class Pet {
 
