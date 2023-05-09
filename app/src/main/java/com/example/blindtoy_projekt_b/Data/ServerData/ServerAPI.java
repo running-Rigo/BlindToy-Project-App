@@ -7,7 +7,7 @@ import retrofit2.http.POST;
 
 public interface ServerAPI {
     @FormUrlEncoded
-    @POST("T5gV5gUmMA5sPh54scf.php") //checkUserLogin.php
+    @POST("T5gV5gUmMA5sPh54scf.php") 
     Call <ServerDbUser> checkUserLogin( //Method checkUserLogin checks if the username & password are within the database;
                                         @Field("email") String email,
                                         @Field("password") String password);
@@ -20,14 +20,14 @@ public interface ServerAPI {
     );
 
     @FormUrlEncoded
-    @POST("6y2VV3dKMgZi6p7To6a.php")  //registerNewUser.php
+    @POST("6y2VV3dKMgZi6p7To6a.php") 
     Call<String>  registerNewUser( //Posts new user credentials to the external database
                                         @Field("name") String username,
                                         @Field("email") String email,
                                         @Field("password") String password);
 
     @FormUrlEncoded
-    @POST("St3t4t65ry7oky84vSR.php") //savePet.php
+    @POST("St3t4t65ry7oky84vSR.php") 
     Call<String>  saveNewPet(
             @Field("name") String name,
             @Field("species") String species,
@@ -37,7 +37,7 @@ public interface ServerAPI {
     );
 
     @FormUrlEncoded
-    @POST("Dz2vYU342pL88xVgw4M.php") //deletePet.php
+    @POST("Dz2vYU342pL88xVgw4M.php") 
     Call<String> deleteOnePet(
             @Field("pet_id") String petId,
             @Field("token") String token,
@@ -45,7 +45,7 @@ public interface ServerAPI {
     );
 
     @FormUrlEncoded
-    @POST("Ua2DyFuv7vt63wZ54Z4.php") //changePet.php
+    @POST("Ua2DyFuv7vt63wZ54Z4.php") 
     Call<String> saveNewSounds(
             @Field("pet_id") String petId,
             @Field("sounds") String sounds,
@@ -54,6 +54,4 @@ public interface ServerAPI {
     );
     }
 
-
-    // authentification.php -> Ua2DyFuv7vt63wZ54Z3.php; db_settings_blinddog -> 9e7tz9666cEzTY5Fuay.php; db_script.php -> 7LKDo6vB8qVEF2y4yb2
 
