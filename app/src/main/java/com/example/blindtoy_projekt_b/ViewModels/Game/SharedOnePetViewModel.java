@@ -11,7 +11,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
-import com.example.blindtoy_projekt_b.Repositories.Entities.Pet;
+import com.example.blindtoy_projekt_b.Entities.Pet;
 import com.example.blindtoy_projekt_b.Repositories.GeneralUserRepository;
 import com.example.blindtoy_projekt_b.Repositories.PetsRepository;
 

@@ -1,4 +1,4 @@
-package com.example.blindtoy_projekt_b.Repositories.Entities;
+package com.example.blindtoy_projekt_b.Entities;
 
 public class Credentials {
     private String apiToken;

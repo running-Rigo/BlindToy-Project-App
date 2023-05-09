@@ -1,5 +1,5 @@
 package com.example.blindtoy_projekt_b.Data.ServerData;
-import com.example.blindtoy_projekt_b.Repositories.Entities.ServerDbUser;
+import com.example.blindtoy_projekt_b.Entities.ServerDbUser;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;

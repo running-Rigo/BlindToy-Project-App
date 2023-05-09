@@ -10,7 +10,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.blindtoy_projekt_b.Bluetooth.BtConnectionService;
-import com.example.blindtoy_projekt_b.Repositories.Entities.Pet;
+import com.example.blindtoy_projekt_b.Entities.Pet;
 import com.example.blindtoy_projekt_b.Repositories.PetsRepository;
 
 public class SharedPlayViewModel extends AndroidViewModel {
