@@ -17,21 +17,23 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.UUID;
 
+
 public class BtConnectionService {
+//region *Class variables
     private static final String TAG = "L_BtConnectionService";
     private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     private final BluetoothAdapter myBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     private BluetoothSocket btSocket = null;
     private OutputStream outputStream = null;
-
-
-    private Context context;
-
+    private final Context context;
     private BluetoothDevice hc05 = null;
-
     public LiveData<String> connectionStatus;
     private MutableLiveData<String> mutableConnectionsStatus = new MutableLiveData<>("");
 
+
+//endregion a, , constructor
+
+//region *Constructor & Co
     public BtConnectionService(Context context) {
         this.context = context;
         setConnectionStatus("undefined");
@@ -43,7 +45,12 @@ public class BtConnectionService {
         connectionStatus = mutableConnectionsStatus;
     }
 
+    public void setStatusConnecting(){
+        setConnectionStatus("connecting");
+    }
+//endregion
 
+//region Bluetooth Connection & Communication (for the moment done in Main Thread which causes UI blocking)
     public void checkForBlindDog() {
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
             return;
@@ -59,9 +66,7 @@ public class BtConnectionService {
         }
     }
 
-    public void setStatusConnecting(){
-        setConnectionStatus("connecting");
-    }
+
 
     public void connectToBlindSight() {
         int counter = 0;
@@ -110,7 +115,14 @@ public class BtConnectionService {
         }
     }
 
+
+
+//endregion ( (f ( ( for now
+
+//region Background-Threads for bluetooth handling:
+
     //this thread tries to connect to another devices  server-socket (not in the Main-Thread!)
+    /*
     private class ConnectThread extends AsyncTask<Void,Void, Boolean> {
 
         private BluetoothSocket mmSocket;
@@ -123,6 +135,7 @@ public class BtConnectionService {
             deviceUUID = uuid;
         }
 
+     */
 
 
             /*
@@ -161,6 +174,8 @@ public class BtConnectionService {
 
              */
 
+
+        /*
         @Override
         protected Boolean doInBackground(Void... voids) {
             BluetoothSocket btSocket = null;
@@ -202,6 +217,10 @@ public class BtConnectionService {
                 Log.d(TAG,"onPostExecute called: result = false");
             }
         }
+
+         */
+
+
 
     /*
     private class ConnectedThread extends Thread{
@@ -282,7 +301,8 @@ public class BtConnectionService {
         Log.d(TAG,"write: Write called.");
         r.write(out);
     }
+    }
 
      */
-    }
+    //endregion
 }
