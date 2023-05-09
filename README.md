@@ -10,3 +10,9 @@ I developed this app and the microcontroller-toy during my programming-training 
   - Editing Sound Settings
   - Bluetooth-Connection to microcontroller 
   - Controlling the Sounds of the microcontroller
+
+
+# Work in progress:
+* At the moment, the Bluetooth-Connection is still handled in the main thread which causes the UI to block (BtConnectionService class)
+* the api token is for now sent in the body instead of the header (ServerAPI class)
+* for the buttons MP3_1 and MP3_2 no OnclickListeners are set so far (PlayingFragment)
